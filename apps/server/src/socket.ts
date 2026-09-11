@@ -44,13 +44,24 @@ export function initSocket(httpServer: HttpServer): Server {
 
   // Redis adapter for horizontal scaling
   if (process.env.REDIS_URL) {
-    const pub = new Redis(process.env.REDIS_URL!, { lazyConnect: true });
+    const pub = new Redis(process.env.REDIS_URL!, {
+      lazyConnect: true,
+      maxRetriesPerRequest: 1,
+      retryStrategy: () => null,
+      enableOfflineQueue: false,
+    });
+    pub.on('error', (err) => {
+      logger.debug({ err: err.message }, '[mirage:socket] Redis pub error');
+    });
     const sub = pub.duplicate();
+    sub.on('error', (err) => {
+      logger.debug({ err: err.message }, '[mirage:socket] Redis sub error');
+    });
     Promise.all([pub.connect(), sub.connect()]).then(() => {
       io.adapter(createAdapter(pub, sub));
       logger.info('[mirage:socket] Redis adapter attached');
-    }).catch((err) => {
-      logger.error({ err }, '[mirage:socket] Redis adapter failed — falling back to in-memory');
+    }).catch(() => {
+      logger.info('[mirage:socket] Redis unavailable — running with in-memory adapter');
     });
   }
 

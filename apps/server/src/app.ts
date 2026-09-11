@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import crypto from 'crypto';
+import path from 'path';
+import fs from 'fs';
 import mongoose from 'mongoose';
 import { zonesRouter } from './routes/zones';
 import { resourcesRouter } from './routes/resources';
@@ -43,26 +45,15 @@ app.use(metricsMiddleware);
 
 // --- SECURITY HEADERS ---
 app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", 'data:', 'https:'],
-      connectSrc: ["'self'", 'wss:', 'ws:'],
-      fontSrc: ["'self'"],
-      objectSrc: ["'none'"],
-      frameAncestors: ["'none'"],
-    },
-  },
+  contentSecurityPolicy: false,
   crossOriginEmbedderPolicy: false, // Allow external tile images for Leaflet
 }));
 
 // CORS Whitelist config
-const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173').split(',');
+const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173,http://localhost:4000,http://localhost:4001').split(',');
 app.use(cors({
   origin: (origin, cb) => {
-    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    if (!origin || allowedOrigins.includes(origin) || origin.includes('localhost') || origin.includes('127.0.0.1') || origin.includes('shashankj.tech')) return cb(null, true);
     cb(new Error('CORS policy violation'));
   },
   credentials: true
@@ -248,6 +239,24 @@ app.use('/api/forecast', forecastRouter);
 app.use('/api/dtn', dtnRouter);
 app.use('/api/evacuation', evacuationRouter);
 app.use('/api/governance', governanceRouter);
+
+// --- STATIC FRONTEND SPA SERVING ---
+const candidates = [
+  path.resolve(__dirname, '../../web/dist'),
+  path.resolve(process.cwd(), 'apps/web/dist'),
+  path.resolve(process.cwd(), '../web/dist'),
+];
+const webDistPath = candidates.find(p => fs.existsSync(path.join(p, 'index.html')));
+
+if (webDistPath) {
+  app.use(express.static(webDistPath));
+  app.use((req, res, next) => {
+    if (req.method === 'GET' && !req.path.startsWith('/api') && !req.path.startsWith('/health') && !req.path.startsWith('/ready') && !req.path.startsWith('/metrics')) {
+      return res.sendFile(path.join(webDistPath, 'index.html'));
+    }
+    next();
+  });
+}
 
 // --- GLOBAL ERROR BOUNDARY ---
 app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

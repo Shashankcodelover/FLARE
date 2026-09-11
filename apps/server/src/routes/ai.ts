@@ -112,6 +112,16 @@ aiRouter.post('/responder-onboard', async (req, res) => {
       onboardedAt: new Date().toISOString()
     };
 
+    res.json({
+      success: true,
+      responder,
+      message: `Responder ${responder.callsign} onboarded successfully.`
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 /**
  * POST /api/v1/ai/command-dispatcher
  * High-capacity autonomous incident commander dispatcher.

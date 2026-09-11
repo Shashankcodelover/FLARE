@@ -148,8 +148,6 @@ export const TacticalHub: React.FC<TacticalHubProps> = ({ theme, isOpen, onClose
   });
   const [proposals, setProposals] = useState<GovernanceProposal[]>(() => governor.getAllProposals());
 
-  if (!isOpen) return null;
-
   // Handlers
   const handleRunTriage = () => {
     const result = evaluateSTART({
@@ -501,7 +499,7 @@ export const TacticalHub: React.FC<TacticalHubProps> = ({ theme, isOpen, onClose
 
   const mciSummary = summarizeMCI(triageHistory);
 
-
+  if (!isOpen) return null;
 
   return (
     <div
