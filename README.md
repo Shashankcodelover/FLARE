@@ -63,3 +63,5 @@ Decentralized-Disaster-Response-Resource-Geofencing-System/
 ## 🌐 Vision
 
 Providing a decentralized, open-source infrastructure for humanitarian organizations to coordinate life-saving efforts without relying on single points of failure.
+
+<!-- Deployment trigger: 2026-09-15 21:12:22 -->
