@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "dev": "npx turbo run dev",
-    "build": "npx turbo run build && node -e \"const fs=require('fs'); if(!fs.existsSync('dist')) fs.mkdirSync('dist'); fs.cpSync('apps/web/dist', 'dist', {recursive: true});\"",
+    "build": "npm --prefix apps/web run build && node -e \"const fs=require('fs'); if(!fs.existsSync('dist')) fs.mkdirSync('dist'); fs.cpSync('apps/web/dist', 'dist', {recursive: true});\"",
     "lint": "npx turbo run lint",
     "test": "npx turbo run test",
     "clean": "npx turbo run clean"
@@ -18,7 +18,7 @@
   },
   "packageManager": "npm@10.0.0",
   "engines": {
-    "node": ">=22.0.0",
-    "npm": ">=10.0.0"
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   }
 }
