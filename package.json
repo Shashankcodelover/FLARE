@@ -13,6 +13,9 @@
     "test": "npx turbo run test",
     "clean": "npx turbo run clean"
   },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
   "devDependencies": {
     "turbo": "^2.0.0"
   }
