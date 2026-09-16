@@ -9,6 +9,7 @@ import { VolunteerPanel } from './components/VolunteerPanel';
 import { MeshTopology } from './components/MeshTopology';
 import { CommsPanel } from './components/CommsPanel';
 import { TacticalHub } from './components/TacticalHub';
+import { BulkIngestionStudio } from './components/BulkIngestionStudio';
 import { useSocket } from './hooks/useSocket';
 import { useP2PSync } from '@mirage/crdt-logic';
 import { useVolunteerSim } from './hooks/useVolunteerSim';
@@ -22,7 +23,7 @@ export default function App() {
   const { styles, themeMode, lang, triggerHaptic, toggleTheme, t } = appTheme;
   
   const [alerts, setAlerts] = useState<GeofenceAlert[]>([]);
-  const [activePanel, setActivePanel] = useState<'resources' | 'alerts' | 'volunteers' | 'mesh' | 'comms'>('volunteers');
+  const [activePanel, setActivePanel] = useState<'resources' | 'alerts' | 'volunteers' | 'mesh' | 'comms' | 'ingestion'>('volunteers');
   const [showSosSlider, setShowSosSlider] = useState(false);
   const [sosTriggered, setSosTriggered] = useState(false);
   const [sosProgress, setSosProgress] = useState(0);
@@ -687,7 +688,7 @@ export default function App() {
 
           {/* Thumb-reachable Tabs */}
           <div style={{ display: 'flex', borderBottom: `${styles.borderWidth} solid ${styles.borderColor}`, flexShrink: 0 }}>
-            {(['volunteers', 'resources', 'alerts', 'mesh', 'comms'] as const).map((tab) => (
+            {(['volunteers', 'resources', 'alerts', 'mesh', 'comms', 'ingestion'] as const).map((tab) => (
               <button 
                 key={tab} 
                 onClick={() => {
@@ -736,6 +737,7 @@ export default function App() {
             {activePanel === 'alerts' && <AlertFeed alerts={alerts} onDismiss={(i) => setAlerts(p => p.filter((_, idx) => idx !== i))} />}
             {activePanel === 'mesh' && <MeshTopology connected={connected} peerCount={peerCount} />}
             {activePanel === 'comms' && <CommsPanel socket={socket} volunteers={volunteers} token={token} />}
+            {activePanel === 'ingestion' && <BulkIngestionStudio />}
           </div>
         </div>
       </div>

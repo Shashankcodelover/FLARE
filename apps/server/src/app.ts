@@ -27,6 +27,7 @@ import { plumeRouter } from './routes/plume';
 import { acousticRouter } from './routes/acoustic';
 import { pqcRouter } from './routes/pqc';
 import { sovereignV15Router } from './routes/sovereignV15';
+import { topologyRouter } from './routes/topologyRoutes';
 import { issueToken } from './middleware/auth';
 
 
@@ -59,7 +60,8 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(express.json({ limit: '1mb' }));
+app.use(express.json({ limit: '15mb' }));
+app.use(express.text({ limit: '15mb', type: ['text/plain', 'text/csv', 'application/csv'] }));
 
 // --- NoSQL INJECTION SANITIZATION ---
 app.use(sanitize);
@@ -215,6 +217,7 @@ app.use('/api/v1/hazard/plume', auditLog('PlumeHazard'), plumeRouter);
 app.use('/api/v1/iot/audio', auditLog('AcousticDetection'), acousticRouter);
 app.use('/api/v1/security/pqc', auditLog('PQCCrypto'), pqcRouter);
 app.use('/api/v1/sovereign', auditLog('SovereignV15'), sovereignV15Router);
+app.use('/api/v1/topology', auditLog('TopologyMesh'), topologyRouter);
 app.use('/api/v1/system', auditBenchmarkRouter);
 
 
@@ -223,6 +226,7 @@ app.use('/api/v1/system', auditBenchmarkRouter);
 
 
 // Legacy fallback routes for backward compatibility
+app.use('/api/topology', auditLog('TopologyMesh'), topologyRouter);
 app.use('/api/zones', auditLog('DangerZone'), zonesRouter);
 app.use('/api/resources', auditLog('ResourceHub'), resourcesRouter);
 app.use('/api/responders', auditLog('Responder'), respondersRouter);
