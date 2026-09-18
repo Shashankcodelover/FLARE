@@ -1,5 +1,9 @@
 # Decentralized Disaster Response System (Project Mirage)
 
+## 🌐 Live Deployment
+
+**Live URL:** https://flare.shashankj.tech
+
 A state-of-the-art emergency management platform designed for resilient coordination during natural disasters when centralized cloud and cellular infrastructure fail.
 
 ## 🚀 Key Features
