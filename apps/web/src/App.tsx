@@ -20,7 +20,7 @@ export default function App() {
   const { socket, connected } = useSocket();
   const { peerCount, syncStatus } = useP2PSync(socket);
   const appTheme = useAppTheme();
-  const { styles, themeMode, lang, triggerHaptic, toggleTheme, t } = appTheme;
+  const { styles, themeMode, lang, triggerHaptic, toggleTheme, t, token } = appTheme;
   
   const [alerts, setAlerts] = useState<GeofenceAlert[]>([]);
   const [activePanel, setActivePanel] = useState<'resources' | 'alerts' | 'volunteers' | 'mesh' | 'comms' | 'ingestion'>('volunteers');
