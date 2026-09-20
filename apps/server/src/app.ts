@@ -38,10 +38,13 @@ app.use(helmet({
 }));
 
 // CORS Whitelist config
-const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173').split(',');
+const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173,https://flare.shashankj.tech,https://decentralized-disaster-response-resource-geofencing-system.vercel.app').split(',');
 app.use(cors({
   origin: (origin, cb) => {
-    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    // Allow requests with no origin (server-to-server, curl, health checks)
+    if (!origin) return cb(null, true);
+    // Allow any Vercel preview deployment
+    if (origin.endsWith('.vercel.app') || allowedOrigins.includes(origin)) return cb(null, true);
     cb(new Error('CORS policy violation'));
   },
   credentials: true
