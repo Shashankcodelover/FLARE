@@ -94,7 +94,7 @@ app.use((req, res, next) => {
 });
 
 // --- Periodic cleanup of rate limit map to prevent memory leak ---
-setInterval(() => {
+const cleanupInterval = setInterval(() => {
   const now = Date.now();
   for (const [key, timestamps] of rateLimitMap.entries()) {
     const valid = timestamps.filter(t => now - t < RATE_LIMIT_WINDOW);
@@ -102,6 +102,7 @@ setInterval(() => {
     else rateLimitMap.set(key, valid);
   }
 }, RATE_LIMIT_WINDOW);
+cleanupInterval.unref();
 
 // --- HEALTH & READINESS ---
 app.get('/health', (_req, res) => {
