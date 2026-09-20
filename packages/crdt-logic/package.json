@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@mirage/shared-types": "*",
-    "yjs": "^13.6.0"
+    "yjs": "^13.6.32"
   },
   "peerDependencies": {
     "react": "^19.0.0",
