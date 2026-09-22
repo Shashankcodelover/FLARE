@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { DangerZoneModel } from '../models/DangerZone';
-import { SOCKET_EVENTS } from '@mirage/shared-types';
+import { SOCKET_EVENTS } from '../shared-constants';
 import { validate, validateQuery } from '../middleware/validate';
 import { requireAuth, requireRole } from '../middleware/auth';
 import { createZoneSchema, updateZoneSchema, zoneQuerySchema } from '../schemas/zone.schema';

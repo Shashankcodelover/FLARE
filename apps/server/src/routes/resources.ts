@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { ResourceHubModel } from '../models/ResourceHub';
-import { SOCKET_EVENTS } from '@mirage/shared-types';
+import { SOCKET_EVENTS } from '../shared-constants';
 import { validate, validateQuery } from '../middleware/validate';
 import { requireAuth, requireRole } from '../middleware/auth';
 import { createResourceSchema, updateStockSchema, resourceQuerySchema } from '../schemas/resource.schema';

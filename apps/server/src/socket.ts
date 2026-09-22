@@ -2,7 +2,7 @@ import type { Server as HttpServer } from 'http';
 import { Server } from 'socket.io';
 import Redis from 'ioredis';
 import { createAdapter } from '@socket.io/redis-adapter';
-import { SOCKET_EVENTS } from '@mirage/shared-types';
+import { SOCKET_EVENTS } from './shared-constants';
 import { handleGeofenceCheck } from './services/geofenceService';
 import logger from './logger';
 
