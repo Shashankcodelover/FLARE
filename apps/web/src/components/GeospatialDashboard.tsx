@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { API_URL } from '../config';
 
 const SEVERITY_COLORS: Record<string, string> = {
-  low: '#22c55e', medium: '#f59e0b', high: '#ef4444', critical: '#a855f7',
+  low: '#22c55e', medium: '#f59e0b', high: '#ef4444', critical: '#3b82f6',
 };
 const SEVERITY_GLOW: Record<string, string> = {
   low: 'rgba(34,197,94,0.15)', medium: 'rgba(245,158,11,0.2)',
@@ -581,7 +581,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
                     <option value="low">Low (Green)</option>
                     <option value="medium">Medium (Yellow)</option>
                     <option value="high">High (Red)</option>
-                    <option value="critical">Critical (Purple)</option>
+                    <option value="critical">Critical (blue)</option>
                   </select>
                 </div>
                 <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
