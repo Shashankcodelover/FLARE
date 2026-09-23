@@ -2,6 +2,7 @@ services:
   - type: web
     name: flare-api
     env: node
+    plan: free
     buildCommand: npm install && npx turbo run build --filter=@mirage/api
     startCommand: cd apps/server && node dist/index.js
     envVars:
