@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: flare-api
+    env: node
+    buildCommand: npm install && npx turbo run build --filter=@mirage/api
+    startCommand: cd apps/server && node dist/index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false

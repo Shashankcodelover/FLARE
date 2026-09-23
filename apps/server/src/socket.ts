@@ -15,6 +15,8 @@ export function initSocket(httpServer: HttpServer): Server {
   if (process.env.REDIS_URL) {
     const pub = new Redis(process.env.REDIS_URL!, { lazyConnect: true });
     const sub = pub.duplicate();
+    pub.on('error', () => {});
+    sub.on('error', () => {});
     Promise.all([pub.connect(), sub.connect()]).then(() => {
       io.adapter(createAdapter(pub, sub));
       logger.info('[mirage:socket] Redis adapter attached');

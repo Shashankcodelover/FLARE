@@ -6,9 +6,9 @@ import { Request, Response, NextFunction } from 'express';
  * MongoDB operators like $gt, $ne, $in, $regex etc.
  */
 export function sanitize(req: Request, _res: Response, next: NextFunction): void {
-  req.body = deepSanitize(req.body);
-  req.query = deepSanitize(req.query) as typeof req.query;
-  req.params = deepSanitize(req.params) as typeof req.params;
+  if (req.body) Object.defineProperty(req, 'body', { value: deepSanitize(req.body), writable: true });
+  if (req.query) Object.defineProperty(req, 'query', { value: deepSanitize(req.query), writable: true });
+  if (req.params) Object.defineProperty(req, 'params', { value: deepSanitize(req.params), writable: true });
   next();
 }
 
