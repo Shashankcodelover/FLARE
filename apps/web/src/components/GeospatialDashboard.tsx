@@ -51,7 +51,7 @@ function MapController({ zones }: { zones: DangerZone[] }) {
   const map = useMap();
   const fitted = useRef(false);
   useEffect(() => {
-    if (zones.length > 0 && !fitted.current) {
+    if (Array.isArray(zones) && zones.length > 0 && !fitted.current) {
       fitted.current = true;
       try {
         const allCoords = zones.flatMap(z =>
@@ -278,7 +278,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
         )}
 
         {/* Danger zones */}
-        {zones.map((zone) => {
+        {(Array.isArray(zones) ? zones : []).map((zone) => {
           const positions = zone.geometry.coordinates[0].map(([lng, lat]) => [lat, lng] as [number, number]);
           const color = isContrast ? '#00ff00' : (SEVERITY_COLORS[zone.severity] ?? '#ef4444');
           return (
@@ -299,7 +299,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
         })}
 
         {/* Resource hubs */}
-        {hubs.map((hub) => {
+        {(Array.isArray(hubs) ? hubs : []).map((hub) => {
           const [lng, lat] = hub.location.coordinates;
           return (
             <Marker key={hub._id} position={[lat, lng]} icon={hubIcon()}>
@@ -320,7 +320,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
         })}
 
         {/* Live volunteer markers */}
-        {volunteers.map((v) => (
+        {(Array.isArray(volunteers) ? volunteers : []).map((v) => (
           <Marker
             key={v.id}
             position={[v.lat, v.lng]}

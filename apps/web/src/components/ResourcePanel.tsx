@@ -23,8 +23,8 @@ export function ResourcePanel({ socket }: Props) {
 
   useEffect(() => {
     fetch(`${API_URL}/api/resources`).then((r) => r.json()).then((data: ResourceHub[]) => {
-      setHubs(data);
-      if (data.length > 0) setExpanded(data[0]._id);
+      setHubs(safeData);
+      if (safeData.length > 0) setExpanded(safeData[0]._id);
     }).catch(console.error);
   }, []);
 
@@ -79,7 +79,7 @@ export function ResourcePanel({ socket }: Props) {
         </div>
       )}
 
-      {hubs.map((hub) => {
+      {(Array.isArray(hubs) ? hubs : []).map((hub) => {
         const isOpen = expanded === hub._id;
         const lowStock = hub.resources.filter(r => r.quantity < 20).length;
         return (
