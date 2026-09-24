@@ -285,7 +285,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
             <Polygon key={zone._id} positions={positions}
               pathOptions={{ color, fillColor: isContrast ? 'transparent' : SEVERITY_GLOW[zone.severity], fillOpacity: 1, weight: 2, opacity: 0.9 }}>
               <Popup>
-                <div style={{ background: '#0d1f35', color: '#e2e8f0', padding: '8px 12px', borderRadius: 6, minWidth: 180, fontFamily: styles.fontFamily }}>
+                <div style={{ background: isContrast ? '#000000' : 'var(--glass-bg)', color: '#e2e8f0', padding: '8px 12px', borderRadius: 6, minWidth: 180, fontFamily: styles.fontFamily, border: `1px solid ${styles.borderColor}`, backdropFilter: isContrast ? 'none' : 'blur(var(--glass-blur))' }}>
                   <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 4 }}>{zone.name}</div>
                   <div style={{ display: 'flex', gap: 6, marginBottom: 4 }}>
                     <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 4, background: color + '33', color, border: `1px solid ${color}`, textTransform: 'uppercase' }}>{zone.severity}</span>
@@ -304,7 +304,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
           return (
             <Marker key={hub._id} position={[lat, lng]} icon={hubIcon()}>
               <Popup>
-                <div style={{ background: '#0d1f35', color: '#e2e8f0', padding: '8px 12px', borderRadius: 6, minWidth: 200, fontFamily: styles.fontFamily }}>
+                <div style={{ background: isContrast ? '#000000' : 'var(--glass-bg)', color: '#e2e8f0', padding: '8px 12px', borderRadius: 6, minWidth: 200, fontFamily: styles.fontFamily, border: `1px solid ${styles.borderColor}`, backdropFilter: isContrast ? 'none' : 'blur(var(--glass-blur))' }}>
                   <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 6, color: '#38bdf8' }}>📦 {hub.name}</div>
                   <div style={{ fontSize: 10, color: '#64748b', marginBottom: 6 }}>Capacity: {hub.capacity}</div>
                   {hub.resources.map((item) => (
@@ -328,7 +328,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
             eventHandlers={{ click: () => onSelectVolunteer(selectedVolunteerId === v.id ? null : v) }}
           >
             <Popup>
-              <div style={{ background: '#0d1f35', color: '#e2e8f0', padding: '10px 14px', borderRadius: 6, minWidth: 200, fontFamily: styles.fontFamily }}>
+              <div style={{ background: isContrast ? '#000000' : 'var(--glass-bg)', color: '#e2e8f0', padding: '10px 14px', borderRadius: 6, minWidth: 200, fontFamily: styles.fontFamily, border: `1px solid ${styles.borderColor}`, backdropFilter: isContrast ? 'none' : 'blur(var(--glass-blur))' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
                   <span style={{ fontSize: 22 }}>{v.gender === 'female' ? '👩' : '👨'}</span>
                   <div>
@@ -339,7 +339,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
                 <div style={{ fontSize: 10, marginBottom: 6 }}>
                   <span style={{
                     padding: '2px 8px', borderRadius: 4, fontWeight: 700,
-                    background: v.status === 'in-zone' ? '#7f1d1d' : v.status === 'moving' ? '#14532d' : '#1e293b',
+                    background: v.status === 'in-zone' ? '#7f1d1d' : v.status === 'moving' ? '#14532d' : 'rgba(255,255,255,0.1)',
                     color: v.status === 'in-zone' ? '#fca5a5' : v.status === 'moving' ? '#86efac' : '#94a3b8',
                   }}>
                     {v.status === 'in-zone' ? '⚠ IN DANGER ZONE' : v.status === 'moving' ? '→ EN ROUTE' : '○ STANDBY'}
@@ -347,7 +347,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
                   {v.skills.map(s => (
-                    <span key={s} style={{ fontSize: 9, padding: '1px 5px', borderRadius: 3, background: '#1e3a5f', color: '#94a3b8' }}>{s}</span>
+                    <span key={s} style={{ fontSize: 9, padding: '1px 5px', borderRadius: 3, background: 'rgba(255,255,255,0.1)', color: '#94a3b8' }}>{s}</span>
                   ))}
                 </div>
               </div>
@@ -360,7 +360,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
       <div style={{ position: 'absolute', top: 12, right: 12, zIndex: 1000, display: 'flex', gap: 8 }}>
         {/* Wheelchair accessible routing filter checkbox */}
         <label style={{
-          background: isContrast ? '#000000' : 'rgba(15, 23, 42, 0.9)',
+          background: isContrast ? '#000000' : 'var(--glass-bg)',
           color: isContrast ? '#00ff00' : '#ffffff',
           border: `2px solid ${styles.borderColor}`,
           padding: '6px 12px',
@@ -372,7 +372,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
           alignItems: 'center',
           gap: 6,
           boxShadow: isContrast ? 'none' : '0 4px 12px rgba(0,0,0,0.5)',
-          backdropFilter: styles.panelBackdrop,
+          backdropFilter: isContrast ? 'none' : 'blur(var(--glass-blur))',
           userSelect: 'none',
         }}>
           <input
@@ -396,7 +396,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
                   triggerHaptic('success');
                 }}
                 style={{
-                  background: isContrast ? '#000000' : 'rgba(15, 23, 42, 0.9)',
+                  background: isContrast ? '#000000' : 'var(--glass-bg)',
                   color: isContrast ? '#00ff00' : '#ffffff',
                   border: `2px solid ${styles.borderColor}`,
                   padding: '6px 12px',
@@ -405,14 +405,14 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
                   fontWeight: 'bold',
                   cursor: 'pointer',
                   boxShadow: isContrast ? 'none' : '0 4px 12px rgba(0,0,0,0.5)',
-                  backdropFilter: styles.panelBackdrop,
+                  backdropFilter: isContrast ? 'none' : 'blur(var(--glass-blur))',
                 }}
               >
                 ✏ Draw Geofence
               </button>
             ) : (
               <div style={{ 
-                background: isContrast ? '#000000' : 'rgba(15, 23, 42, 0.95)', 
+                background: isContrast ? '#000000' : 'var(--glass-bg)', 
                 border: `2px solid ${styles.borderColor}`, 
                 padding: '10px 14px', 
                 borderRadius: 8, 
@@ -420,7 +420,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
                 flexDirection: 'column',
                 gap: 8,
                 boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
-                backdropFilter: styles.panelBackdrop,
+                backdropFilter: isContrast ? 'none' : 'blur(var(--glass-blur))',
               }}>
                 <div style={{ fontSize: 10, color: isContrast ? '#00ff00' : '#38bdf8', fontWeight: 'bold' }}>
                   DRAWING MODE ACTIVE ({drawnPoints.length} pts)
@@ -434,9 +434,9 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
                     disabled={drawnPoints.length < 3}
                     style={{
                       flex: 1,
-                      background: drawnPoints.length < 3 ? '#1e293b' : (isContrast ? 'transparent' : '#10b981'),
+                      background: drawnPoints.length < 3 ? 'var(--glass-bg)' : (isContrast ? 'transparent' : '#10b981'),
                       color: drawnPoints.length < 3 ? '#64748b' : (isContrast ? '#00ff00' : '#ffffff'),
-                      border: `1px solid ${drawnPoints.length < 3 ? '#334155' : (isContrast ? '#00ff00' : '#10b981')}`,
+                      border: `1px solid ${drawnPoints.length < 3 ? styles.borderColor : (isContrast ? '#00ff00' : '#10b981')}`,
                       borderRadius: 4,
                       padding: '4px 8px',
                       fontSize: 9,
@@ -488,7 +488,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
       </div>
 
       {/* Legend */}
-      <div style={{ position: 'absolute', bottom: 28, left: 12, zIndex: 1000, background: isContrast ? '#000000' : 'rgba(4,14,28,0.92)', border: `${styles.borderWidth} solid ${styles.borderColor}`, borderRadius: 8, padding: '10px 14px', backdropFilter: styles.panelBackdrop }}>
+      <div style={{ position: 'absolute', bottom: 28, left: 12, zIndex: 1000, background: isContrast ? '#000000' : 'var(--glass-bg)', border: `${styles.borderWidth} solid ${styles.borderColor}`, borderRadius: 8, padding: '10px 14px', backdropFilter: isContrast ? 'none' : 'blur(var(--glass-blur))' }}>
         <div style={{ fontSize: 9, color: isContrast ? '#00ff00' : '#475569', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>{t('legend')}</div>
         {Object.entries(SEVERITY_COLORS).map(([sev, color]) => (
           <div key={sev} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
@@ -522,8 +522,8 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
               exit={{ scale: 0.95, opacity: 0 }}
               style={{
                 width: '100%', maxWidth: 400,
-                background: isContrast ? '#000000' : 'rgba(15, 23, 42, 0.98)',
-                backdropFilter: styles.panelBackdrop,
+                background: isContrast ? '#000000' : 'var(--glass-bg)',
+                backdropFilter: isContrast ? 'none' : 'blur(var(--glass-blur))',
                 border: `2px solid ${styles.borderColor}`,
                 borderRadius: 12, padding: 20,
                 boxShadow: isContrast ? 'none' : '0 12px 40px rgba(0,0,0,0.6)',
@@ -543,7 +543,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
                     onChange={(e) => setNewZoneName(e.target.value)}
                     placeholder="Wildfire Zone Delta"
                     style={{
-                      background: '#09111e', color: isContrast ? '#00ff00' : '#f1f5f9',
+                      background: 'rgba(0,0,0,0.2)', color: isContrast ? '#00ff00' : '#f1f5f9',
                       border: `1px solid ${styles.borderColor}`, borderRadius: 6,
                       padding: '8px 12px', fontSize: 12, outline: 'none',
                     }}
@@ -558,7 +558,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
                     placeholder="Evacuation details and boundary notes"
                     rows={3}
                     style={{
-                      background: '#09111e', color: isContrast ? '#00ff00' : '#f1f5f9',
+                      background: 'rgba(0,0,0,0.2)', color: isContrast ? '#00ff00' : '#f1f5f9',
                       border: `1px solid ${styles.borderColor}`, borderRadius: 6,
                       padding: '8px 12px', fontSize: 12, outline: 'none',
                       resize: 'none',
@@ -572,16 +572,16 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
                     value={newZoneSeverity}
                     onChange={(e) => setNewZoneSeverity(e.target.value as any)}
                     style={{
-                      background: '#09111e', color: isContrast ? '#00ff00' : '#f1f5f9',
+                      background: 'rgba(0,0,0,0.2)', color: isContrast ? '#00ff00' : '#f1f5f9',
                       border: `1px solid ${styles.borderColor}`, borderRadius: 6,
                       padding: '8px 12px', fontSize: 12, outline: 'none',
                       cursor: 'pointer',
                     }}
                   >
-                    <option value="low">Low (Green)</option>
-                    <option value="medium">Medium (Yellow)</option>
-                    <option value="high">High (Red)</option>
-                    <option value="critical">Critical (blue)</option>
+                    <option value="low" style={{ background: '#09111e' }}>Low (Green)</option>
+                    <option value="medium" style={{ background: '#09111e' }}>Medium (Yellow)</option>
+                    <option value="high" style={{ background: '#09111e' }}>High (Red)</option>
+                    <option value="critical" style={{ background: '#09111e' }}>Critical (blue)</option>
                   </select>
                 </div>
                 <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>

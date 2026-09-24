@@ -3,8 +3,9 @@ import { TRANSLATIONS, LANG_LIST, translate } from '../i18n/locales';
 import type { Language } from '../i18n/locales';
 import { API_URL } from '../config';
 
-export type ThemeMode = 'glass' | 'contrast';
+export type ThemeMode = 'light' | 'dark' | 'contrast' | 'glass';
 export type TextSize = 'sm' | 'md' | 'lg';
+export type UserRole = 'admin' | 'coordinator' | 'field_agent' | 'responder' | 'viewer';
 
 // Re-export i18n types and constants so existing consumers don't break
 export type { Language };
@@ -12,7 +13,7 @@ export { TRANSLATIONS, LANG_LIST };
 
 export function useTheme() {
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
-    return (localStorage.getItem('mirage_theme') as ThemeMode) || 'glass';
+    return (localStorage.getItem('mirage_theme') as ThemeMode) || 'light';
   });
 
   const [textSize, setTextSize] = useState<TextSize>(() => {
@@ -24,12 +25,23 @@ export function useTheme() {
   });
 
   const [isLowEndDevice, setIsLowEndDevice] = useState(false);
-  const [userRole, setUserRole] = useState<'admin' | 'coordinator' | 'field_agent' | 'responder' | 'viewer'>(() => {
-    return (localStorage.getItem('mirage_role') as any) || 'viewer';
+  const [userRole, setUserRole] = useState<UserRole>(() => {
+    return (localStorage.getItem('mirage_role') as UserRole) || 'coordinator';
   });
   const [token, setToken] = useState<string | null>(() => {
     return localStorage.getItem('mirage_token');
   });
+
+  // Sync theme with HTML document element classes
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.remove('dark', 'contrast');
+    if (themeMode === 'dark' || themeMode === 'glass') {
+      root.classList.add('dark');
+    } else if (themeMode === 'contrast') {
+      root.classList.add('contrast');
+    }
+  }, [themeMode]);
 
   // Automatically fetch token when role changes
   useEffect(() => {
@@ -64,85 +76,92 @@ export function useTheme() {
     const hardwareConcurrency = navigator.hardwareConcurrency || 4;
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
-    // Flag device as low-end if no backdrop-filter or CPU cores <= 2 on mobile
     if (!hasBackdropFilter || (isMobile && hardwareConcurrency <= 2)) {
       setIsLowEndDevice(true);
     }
   }, []);
 
+  // Haptic feedback triggers using standard Web Vibration API
+  const triggerHaptic = useCallback((pattern: 'sos' | 'success' | 'warning' | 'tap') => {
+    if (typeof window === 'undefined' || !navigator.vibrate) return;
+    
+    switch (pattern) {
+      case 'sos':
+        navigator.vibrate([100, 50, 100, 50, 100]); // SOS beacon
+        break;
+      case 'success':
+        navigator.vibrate([15]);
+        break;
+      case 'warning':
+        navigator.vibrate([200, 100, 200]);
+        break;
+      case 'tap':
+        navigator.vibrate([8]);
+        break;
+    }
+  }, []);
+
   const toggleTheme = useCallback(() => {
     setThemeMode((prev) => {
-      const nextMode = prev === 'glass' ? 'contrast' : 'glass';
+      // Cycle: light -> dark -> contrast -> light
+      let nextMode: ThemeMode;
+      if (prev === 'light') nextMode = 'dark';
+      else if (prev === 'dark' || prev === 'glass') nextMode = 'contrast';
+      else nextMode = 'light';
+
       localStorage.setItem('mirage_theme', nextMode);
       return nextMode;
     });
     triggerHaptic('success');
-  }, []);
+  }, [triggerHaptic]);
+
+  const changeThemeMode = useCallback((mode: ThemeMode) => {
+    setThemeMode(mode);
+    localStorage.setItem('mirage_theme', mode);
+    triggerHaptic('success');
+  }, [triggerHaptic]);
 
   const changeTextSize = useCallback((size: TextSize) => {
     setTextSize(size);
     localStorage.setItem('mirage_text_size', size);
     triggerHaptic('success');
-  }, []);
+  }, [triggerHaptic]);
 
   const changeLanguage = useCallback((newLang: Language) => {
     setLang(newLang);
     localStorage.setItem('mirage_lang', newLang);
     triggerHaptic('success');
-  }, []);
+  }, [triggerHaptic]);
 
-  const changeRole = useCallback((newRole: typeof userRole) => {
+  const changeRole = useCallback((newRole: UserRole) => {
     setUserRole(newRole);
     localStorage.setItem('mirage_role', newRole);
     triggerHaptic('success');
-  }, []);
-
-  // Haptic feedback triggers using standard Web Vibration API
-  const triggerHaptic = useCallback((pattern: 'sos' | 'success' | 'warning' | 'tap') => {
-    if (!navigator.vibrate) return;
-    
-    switch (pattern) {
-      case 'sos':
-        navigator.vibrate([100, 50, 100, 50, 100]); // Heartbeat SOS
-        break;
-      case 'success':
-        navigator.vibrate([15]); // Sharp tap success
-        break;
-      case 'warning':
-        navigator.vibrate([200, 100, 200]); // Warning vibration
-        break;
-      case 'tap':
-        navigator.vibrate([8]); // Very light tab feedback
-        break;
-    }
-  }, []);
+  }, [triggerHaptic]);
 
   const t = useCallback((key: string): string => {
     return translate(lang, key);
   }, [lang]);
 
-  // Memoize the styles object so consumers don't re-render on every
-  // unrelated state change (e.g. token refresh). Only recomputes when
-  // the actual visual inputs change.
+  // Backward compatibility style bag for legacy components
   const styles = useMemo(() => {
-    const baseFontSize = textSize === 'sm' ? '12px' : textSize === 'md' ? '14px' : '17px';
+    const baseFontSize = textSize === 'sm' ? '12px' : textSize === 'md' ? '14px' : '16px';
     const isContrast = themeMode === 'contrast';
+    const isLight = themeMode === 'light';
     
     return {
       fontSize: baseFontSize,
-      fontFamily: isContrast ? '"Courier New", Courier, monospace' : 'system-ui, -apple-system, sans-serif',
-      appBg: isContrast ? '#000000' : '#040b16',
-      textColor: isContrast ? '#00ff00' : '#e2e8f0',
-      borderColor: isContrast ? '#00ff00' : '#1e3a5f',
+      fontFamily: isContrast ? '"Courier New", Courier, monospace' : 'var(--font-inter)',
+      appBg: 'var(--bg-canvas)',
+      textColor: 'var(--text-primary)',
+      borderColor: isContrast ? '#00ff00' : isLight ? 'rgba(203, 213, 225, 0.8)' : 'rgba(255, 255, 255, 0.12)',
       borderWidth: isContrast ? '2px' : '1px',
       
       // Panel styling
-      panelBg: isContrast 
-        ? '#000000' 
-        : (isLowEndDevice ? 'rgba(7, 15, 30, 0.98)' : 'rgba(7, 15, 30, 0.65)'),
-      panelBackdrop: isLowEndDevice || isContrast ? 'none' : 'blur(15px)',
+      panelBg: 'var(--glass-bg)',
+      panelBackdrop: isLowEndDevice || isContrast ? 'none' : 'var(--glass-blur)',
       
-      // Dynamic buttons
+      // Buttons
       btnPrimaryBg: isContrast ? 'transparent' : '#2563eb',
       btnPrimaryColor: isContrast ? '#00ff00' : '#ffffff',
       btnPrimaryBorder: isContrast ? '2px solid #00ff00' : '1px solid #2563eb',
@@ -151,14 +170,16 @@ export function useTheme() {
       btnDangerColor: isContrast ? '#ff3333' : '#ffffff',
       btnDangerBorder: isContrast ? '2px solid #ff3333' : '1px solid #dc2626',
 
-      headerBg: isContrast ? '#000000' : 'linear-gradient(90deg, #020c1b 0%, #0a1628 50%, #020c1b 100%)',
-      statsBarBg: isContrast ? '#000000' : '#040e1c',
+      headerBg: 'var(--glass-bg)',
+      statsBarBg: isContrast ? '#000000' : isLight ? '#f8fafc' : '#040e1c',
       
-      glowColor: isContrast ? 'rgba(0, 255, 0, 0.6)' : 'rgba(56, 189, 248, 0.5)',
+      glowColor: isContrast ? 'rgba(0, 255, 0, 0.6)' : isLight ? 'rgba(234, 88, 12, 0.3)' : 'rgba(56, 189, 248, 0.5)',
       
       glowShadow: isContrast 
         ? '0 0 10px #00ff00' 
-        : '0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+        : isLight
+        ? '0 10px 30px rgba(15, 23, 42, 0.08)'
+        : '0 10px 30px rgba(0, 0, 0, 0.4)',
     };
   }, [themeMode, textSize, isLowEndDevice]);
 
@@ -170,6 +191,7 @@ export function useTheme() {
     token,
     isLowEndDevice,
     toggleTheme,
+    changeThemeMode,
     changeTextSize,
     changeLanguage,
     changeRole,

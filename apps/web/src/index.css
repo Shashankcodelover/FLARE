@@ -2,11 +2,213 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════
+   PRISM GLASS & TACTICAL SYSTEM THEME TOKENS
+   ═══════════════════════════════════════════════ */
+:root {
+  --font-inter: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-tactical: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* PRISM GLASS — LIGHT THEME (DEFAULT HIGH TACTICAL VISIBILITY) */
+  --bg-canvas: #f1f5f9;
+  --bg-canvas-subtle: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-footnote: #64748b;
+
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-bg-hover: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.85);
+  --glass-border-subtle: rgba(203, 213, 225, 0.5);
+  --glass-shadow: 0 10px 30px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+  --glass-blur: blur(20px);
+
+  /* Tactical Alert Accents */
+  --tactical-orange: #ea580c;
+  --tactical-orange-glow: rgba(234, 88, 12, 0.25);
+  --tactical-green: #16a34a;
+  --tactical-green-glow: rgba(22, 163, 74, 0.25);
+  --tactical-yellow: #d97706;
+  --tactical-yellow-glow: rgba(217, 119, 6, 0.25);
+  --tactical-red: #dc2626;
+  --tactical-cyan: #0284c7;
+
+  --brand-gradient: linear-gradient(135deg, #0284c7 0%, #16a34a 50%, #ea580c 100%);
+  --text-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #334155 100%);
+}
+
+/* PRISM GLASS — DARK THEME */
+html.dark {
+  --bg-canvas: #090d16;
+  --bg-canvas-subtle: #0f172a;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-footnote: #64748b;
+
+  --glass-bg: rgba(15, 23, 42, 0.72);
+  --glass-bg-hover: rgba(30, 41, 59, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.10);
+  --glass-border-subtle: rgba(255, 255, 255, 0.05);
+  --glass-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+  --glass-blur: blur(22px);
+
+  --tactical-orange: #f97316;
+  --tactical-orange-glow: rgba(249, 115, 22, 0.35);
+  --tactical-green: #22c55e;
+  --tactical-green-glow: rgba(34, 197, 94, 0.35);
+  --tactical-yellow: #f59e0b;
+  --tactical-yellow-glow: rgba(245, 158, 11, 0.35);
+  --tactical-red: #ef4444;
+  --tactical-cyan: #38bdf8;
+
+  --brand-gradient: linear-gradient(135deg, #38bdf8 0%, #22c55e 50%, #f97316 100%);
+  --text-gradient: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 60%, #94a3b8 100%);
+}
+
+/* HIGH-CONTRAST TACTICAL MODE (OLED PURE BLACK) */
+html.contrast {
+  --bg-canvas: #000000;
+  --bg-canvas-subtle: #000000;
+  --text-primary: #00ff00;
+  --text-secondary: #00dd00;
+  --text-footnote: #00aa00;
+
+  --glass-bg: #000000;
+  --glass-bg-hover: #0a0a0a;
+  --glass-border: #00ff00;
+  --glass-border-subtle: #00aa00;
+  --glass-shadow: 0 0 12px rgba(0, 255, 0, 0.4);
+  --glass-blur: none;
+
+  --tactical-orange: #ff6600;
+  --tactical-orange-glow: rgba(255, 102, 0, 0.6);
+  --tactical-green: #00ff00;
+  --tactical-green-glow: rgba(0, 255, 0, 0.6);
+  --tactical-yellow: #ffff00;
+  --tactical-yellow-glow: rgba(255, 255, 0, 0.6);
+  --tactical-red: #ff3333;
+  --tactical-cyan: #00ffff;
+
+  --brand-gradient: linear-gradient(135deg, #00ff00 0%, #00ffff 100%);
+  --text-gradient: linear-gradient(135deg, #00ff00 0%, #00ffff 100%);
+}
+
 html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
-  background: #0f172a;
-  color: #f1f5f9;
-  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: var(--font-inter);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ═══════════════════════════════════════════════
+   PRISM GLASS UTILITIES
+   ═══════════════════════════════════════════════ */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 14px;
+}
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 16px;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+}
+
+.glass-card:hover {
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
+  transform: translateY(-2px);
+}
+
+html.dark .glass-card:hover {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+html.contrast .glass-card {
+  border: 2px solid #00ff00;
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+html.contrast .glass-card:hover {
+  box-shadow: 0 0 15px #00ff00;
+  transform: none;
+}
+
+/* Tactical Glow Accents */
+.tactical-glow-orange {
+  box-shadow: 0 0 24px var(--tactical-orange-glow);
+  border-color: var(--tactical-orange) !important;
+}
+
+.tactical-glow-green {
+  box-shadow: 0 0 24px var(--tactical-green-glow);
+  border-color: var(--tactical-green) !important;
+}
+
+.tactical-glow-yellow {
+  box-shadow: 0 0 24px var(--tactical-yellow-glow);
+  border-color: var(--tactical-yellow) !important;
+}
+
+.gradient-text {
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Tactical CRT / Scanline effect overlay */
+.scanline-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+}
+
+html.dark .scanline-overlay {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, 0.015) 2px,
+    rgba(255, 255, 255, 0.015) 4px
+  );
+}
+
+/* Custom Tactical Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.3);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.5);
 }

@@ -21,10 +21,10 @@ export function AlertFeed({ alerts, onDismiss }: Props) {
       </div>
 
       {alerts.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '32px 0', color: isContrast ? '#00ff00' : '#334155' }}>
+        <div style={{ textAlign: 'center', padding: '32px 0', color: isContrast ? '#00ff00' : 'var(--text-secondary)' }}>
           <div style={{ fontSize: 28, marginBottom: 8 }}>✅</div>
           <div style={{ fontSize: 12 }}>No active alerts</div>
-          <div style={{ fontSize: 10, marginTop: 4, color: isContrast ? '#00ff00' : '#1e3a5f', opacity: isContrast ? 0.7 : 1 }}>All zones clear</div>
+          <div style={{ fontSize: 10, marginTop: 4, color: isContrast ? '#00ff00' : 'var(--text-footnote)', opacity: isContrast ? 0.7 : 1 }}>All zones clear</div>
         </div>
       )}
 
@@ -35,36 +35,35 @@ export function AlertFeed({ alerts, onDismiss }: Props) {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
+            className={!isContrast ? 'glass-card' : ''}
             style={{
-              marginBottom: 8,
+              marginBottom: 10,
               background: isContrast 
                 ? '#000000' 
-                : (alert.type === 'enter' ? '#1a0a0a' : '#0a1a0a'),
-              border: `${styles.borderWidth} solid ${
-                alert.type === 'enter' 
-                  ? (isContrast ? '#ff3333' : '#7f1d1d') 
-                  : (isContrast ? '#00ff00' : '#14532d')
-              }`,
-              borderRadius: 6,
-              padding: '8px 10px',
+                : (alert.type === 'enter' ? 'rgba(225, 29, 72, 0.05)' : 'rgba(14, 156, 116, 0.05)'),
+              border: isContrast
+                ? `2px solid ${alert.type === 'enter' ? '#ff3333' : '#00ff00'}`
+                : `1px solid ${alert.type === 'enter' ? 'rgba(225, 29, 72, 0.3)' : 'rgba(14, 156, 116, 0.3)'}`,
+              borderRadius: 8,
+              padding: '12px',
               position: 'relative',
-              boxShadow: isContrast ? 'none' : styles.glowShadow,
+              boxShadow: isContrast ? 'none' : 'var(--glass-shadow)',
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-                <span style={{ fontSize: 16, lineHeight: 1.2 }}>{alert.type === 'enter' ? '🚨' : '✅'}</span>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                <span style={{ fontSize: 18, lineHeight: 1.2 }}>{alert.type === 'enter' ? '🚨' : '✅'}</span>
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: alert.type === 'enter' ? (isContrast ? '#ff3333' : '#fca5a5') : (isContrast ? '#00ff00' : '#86efac') }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: isContrast ? (alert.type === 'enter' ? '#ff3333' : '#00ff00') : (alert.type === 'enter' ? 'var(--rose)' : 'var(--mint)') }}>
                     {alert.type === 'enter' ? t('breach') : t('cleared')}
                   </div>
-                  <div style={{ fontSize: 10, color: isContrast ? '#00ff00' : '#94a3b8', marginTop: 2 }}>
-                    Zone: <strong style={{ color: isContrast ? '#00ff00' : '#e2e8f0' }}>{alert.zoneName}</strong>
+                  <div style={{ fontSize: 11, color: isContrast ? '#00ff00' : 'var(--text-secondary)', marginTop: 4 }}>
+                    Zone: <strong style={{ color: isContrast ? '#00ff00' : 'var(--text-primary)' }}>{alert.zoneName}</strong>
                   </div>
-                  <div style={{ fontSize: 10, color: isContrast ? '#00ff00' : '#64748b', opacity: isContrast ? 0.8 : 1, marginTop: 1 }}>
+                  <div style={{ fontSize: 10, color: isContrast ? '#00ff00' : 'var(--text-footnote)', marginTop: 2 }}>
                     Responder: {alert.responderId.slice(0, 12)}
                   </div>
-                  <div style={{ fontSize: 9, color: isContrast ? '#00ff00' : '#334155', opacity: isContrast ? 0.7 : 1, marginTop: 2 }}>
+                  <div style={{ fontSize: 9, color: isContrast ? '#00ff00' : 'var(--text-footnote)', marginTop: 4 }}>
                     {new Date(alert.timestamp).toLocaleTimeString()}
                   </div>
                 </div>
@@ -77,11 +76,12 @@ export function AlertFeed({ alerts, onDismiss }: Props) {
                 style={{ 
                   background: 'none', 
                   border: 'none', 
-                  color: isContrast ? '#ff3333' : '#475569', 
+                  color: isContrast ? '#ff3333' : 'var(--text-footnote)', 
                   cursor: 'pointer', 
-                  fontSize: 12, 
-                  padding: 2,
+                  fontSize: 14, 
+                  padding: 4,
                   outline: 'none',
+                  transition: 'color 0.2s',
                 }}
               >✕</button>
             </div>

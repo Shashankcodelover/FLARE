@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import type { SyncStatus } from '@mirage/crdt-logic';
 import { useAppTheme } from '../hooks/ThemeContext';
 import { LANG_LIST, Language, TextSize } from '../hooks/useTheme';
+import { Button, Badge } from '@mirage/ui';
 
 interface Props {
   connected: boolean;
@@ -9,9 +10,10 @@ interface Props {
   syncStatus: SyncStatus;
   alertCount: number;
   onShowSitrep: () => void;
+  activeDeck?: 'gateway' | 'hq' | 'responder' | 'logistics';
+  onSelectDeck?: (deck: 'gateway' | 'hq' | 'responder' | 'logistics') => void;
 }
 
-// 50+ languages mock list for high-impact CEO checklist compliance
 const FIFTY_LANGUAGES = [
   ...LANG_LIST,
   { code: 'pt', name: 'Português' },
@@ -47,128 +49,148 @@ const FIFTY_LANGUAGES = [
   { code: 'mr', name: 'मराठी' },
   { code: 'sw', name: 'Kiswahili' },
   { code: 'tl', name: 'Tagalog' },
-  { code: 'sk', name: 'Slovenčina' },
-  { code: 'hr', name: 'Hrvatski' },
-  { code: 'sr', name: 'Српски' },
-  { code: 'sl', name: 'Slovenščina' },
-  { code: 'et', name: 'Eesti' },
-  { code: 'lv', name: 'Latviešu' },
-  { code: 'lt', name: 'Lietuvių' },
-  { code: 'is', name: 'Íslenska' },
 ];
 
-export function CommandHeader({ connected, peerCount, syncStatus, alertCount, onShowSitrep }: Props) {
-  const { styles, themeMode, textSize, lang, userRole, changeRole, toggleTheme, changeTextSize, changeLanguage, triggerHaptic, t } = useAppTheme();
-  
+export function CommandHeader({
+  connected,
+  peerCount,
+  syncStatus,
+  alertCount,
+  onShowSitrep,
+  activeDeck = 'hq',
+  onSelectDeck,
+}: Props) {
+  const {
+    styles,
+    themeMode,
+    textSize,
+    lang,
+    userRole,
+    changeRole,
+    toggleTheme,
+    changeTextSize,
+    changeLanguage,
+    triggerHaptic,
+    t,
+  } = useAppTheme();
+
   const now = new Date();
   const timeStr = now.toUTCString().replace('GMT', 'UTC');
 
   const handleLangChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value as Language;
-    // Map non-pretranslated codes to English fallback but store selected language
     changeLanguage(val);
   };
 
-  return (
-    <header 
-      role="banner"
-      style={{
-        background: styles.headerBg,
-        backdropFilter: styles.panelBackdrop,
-        borderBottom: `${styles.borderWidth} solid ${styles.borderColor}`,
-        padding: '0 16px',
-        height: 60,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexShrink: 0,
-        position: 'relative',
-        zIndex: 1100,
-        fontFamily: styles.fontFamily,
-      }}
-    >
-      {/* Scanline effect for premium/tactical aesthetic */}
-      {themeMode === 'glass' && (
-        <div style={{
-          position: 'absolute', inset: 0, pointerEvents: 'none',
-          background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,255,0.015) 2px, rgba(0,255,255,0.015) 4px)',
-        }} />
-      )}
+  const decks = [
+    { id: 'gateway', label: 'Gateway', icon: '⚡' },
+    { id: 'hq', label: 'HQ Command', icon: '🛡️' },
+    { id: 'responder', label: 'Responder', icon: '🛰️' },
+    { id: 'logistics', label: 'Logistics', icon: '📦' },
+  ] as const;
 
-      {/* Left — branding */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div style={{ position: 'relative' }}>
-          <span style={{ fontSize: 22 }} aria-hidden="true">⚠</span>
-          <AnimatePresence>
-            {alertCount > 0 && (
-              <motion.span
-                initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
-                style={{
-                  position: 'absolute', top: -4, right: -6,
-                  background: themeMode === 'contrast' ? '#00ff00' : '#dc2626', 
-                  color: themeMode === 'contrast' ? '#000000' : '#ffffff', 
-                  borderRadius: '50%',
-                  width: 16, height: 16, fontSize: 9, fontWeight: 700,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: themeMode === 'contrast' ? '0 0 5px #00ff00' : 'none',
-                }}
-              >{alertCount}</motion.span>
-            )}
-          </AnimatePresence>
-        </div>
-        <div>
-          <div style={{ 
-            fontWeight: 900, 
-            fontSize: 16, 
-            letterSpacing: '0.12em', 
-            color: themeMode === 'contrast' ? '#00ff00' : '#f87171', 
-            textTransform: 'uppercase' 
-          }}>
-            Project Mirage
-          </div>
-          <div style={{ fontSize: 9, color: themeMode === 'contrast' ? '#00ff00' : '#64748b', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
-            {t('mode')}
-          </div>
-        </div>
-        
-        <div style={{ width: 1, height: 28, background: styles.borderColor, margin: '0 4px' }} />
-        
-        {/* Monospace Clock */}
-        <div 
-          aria-label="UTC Clock"
-          style={{ fontSize: 10, color: themeMode === 'contrast' ? '#00ff00' : '#94a3b8', fontFamily: 'monospace' }}
+  return (
+    <header
+      role="banner"
+      className="glass-panel border-b border-slate-200 dark:border-slate-800 px-4 py-2.5 flex items-center justify-between flex-shrink-0 relative z-[1100] gap-4"
+    >
+      {/* Scanline tactical overlay */}
+      <div className="scanline-overlay opacity-30" />
+
+      {/* Left Section: Branding & Role Switcher */}
+      <div className="flex items-center gap-4">
+        <button
+          onClick={() => onSelectDeck?.('gateway')}
+          className="flex items-center gap-2.5 text-left group cursor-pointer outline-none"
         >
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-orange-600 to-emerald-500 flex items-center justify-center text-white font-black text-sm shadow-md group-hover:scale-105 transition-transform">
+            FL
+          </div>
+          <div>
+            <div className="flex items-center gap-1.5">
+              <span className="font-tactical font-black text-sm sm:text-base tracking-wider text-slate-900 dark:text-white">
+                FLARE
+              </span>
+              <AnimatePresence>
+                {alertCount > 0 && (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                    className="w-4 h-4 rounded-full bg-red-600 text-white font-bold text-[9px] flex items-center justify-center animate-pulse"
+                  >
+                    {alertCount}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </div>
+            <div className="text-[9px] text-slate-500 font-mono tracking-widest uppercase">
+              {t('mode')}
+            </div>
+          </div>
+        </button>
+
+        {/* Deck Nav Tabs */}
+        {onSelectDeck && (
+          <nav className="hidden md:flex items-center gap-1 p-1 bg-slate-200/50 dark:bg-slate-800/50 rounded-xl">
+            {decks.map((deck) => {
+              const isActive = activeDeck === deck.id;
+              return (
+                <button
+                  key={deck.id}
+                  onClick={() => {
+                    onSelectDeck(deck.id);
+                    triggerHaptic('tap');
+                  }}
+                  className={`flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                    isActive
+                      ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                  }`}
+                >
+                  <span>{deck.icon}</span>
+                  <span>{deck.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+        )}
+      </div>
+
+      {/* Center Section: Telemetry & Time */}
+      <div className="hidden xl:flex items-center gap-5">
+        <StatusPill label={t('incident')} value={t('active')} color="#ea580c" pulse />
+        <StatusPill label={t('threatLevel')} value={t('high')} color="#d97706" />
+        <div className="h-6 w-[1px] bg-slate-200 dark:bg-slate-800" />
+        <div className="text-xs text-slate-500 font-mono" aria-label="UTC Clock">
           {timeStr}
         </div>
       </div>
 
-      {/* Center — Status & Translation & Font Resizer & Role Selector */}
-      <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-        <StatusPill label={t('incident')} value={t('active')} color={themeMode === 'contrast' ? '#00ff00' : '#dc2626'} pulse />
-        <StatusPill label={t('threatLevel')} value={t('high')} color={themeMode === 'contrast' ? '#00ff00' : '#f59e0b'} />
-        
-        {/* Role Selector for RBAC Enforcement */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-          <label htmlFor="role-selector" style={{ fontSize: 8, color: themeMode === 'contrast' ? '#00ff00' : '#475569', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 2 }}>
-            Role
-          </label>
+      {/* Right Section: Connections, SITREP, Role, & Theme */}
+      <div className="flex items-center gap-3">
+        {/* Connection Status Dots */}
+        <div className="hidden sm:flex items-center gap-3">
+          <ConnDot label={t('server')} active={connected} color="#16a34a" />
+          <ConnDot label={`${peerCount} ${t('peers')}`} active={peerCount > 0} color="#0284c7" />
+          <Badge
+            variant={syncStatus === 'synced' ? 'tactical-green' : 'tactical-yellow'}
+            dot
+          >
+            {syncStatus.toUpperCase()}
+          </Badge>
+        </div>
+
+        {/* Role Selector */}
+        <div className="hidden lg:flex items-center">
           <select
             id="role-selector"
+            aria-label="Operational Role"
             value={userRole}
             onChange={(e) => changeRole(e.target.value as any)}
-            style={{
-              background: themeMode === 'contrast' ? '#000000' : 'rgba(15, 23, 42, 0.8)',
-              color: themeMode === 'contrast' ? '#00ff00' : '#f1f5f9',
-              border: `1px solid ${styles.borderColor}`,
-              borderRadius: 4,
-              padding: '2px 6px',
-              fontSize: 10,
-              cursor: 'pointer',
-              outline: 'none',
-              fontFamily: styles.fontFamily,
-            }}
+            className="text-xs px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white/70 dark:bg-slate-800/70 text-slate-800 dark:text-slate-200 outline-none cursor-pointer"
           >
-            <option value="viewer">Viewer (Read-only)</option>
+            <option value="viewer">Viewer</option>
             <option value="field_agent">Field Agent</option>
             <option value="responder">Responder</option>
             <option value="coordinator">Coordinator</option>
@@ -176,26 +198,14 @@ export function CommandHeader({ connected, peerCount, syncStatus, alertCount, on
           </select>
         </div>
 
-        {/* i18n Selector with 50+ Languages */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-          <label htmlFor="lang-selector" style={{ fontSize: 8, color: themeMode === 'contrast' ? '#00ff00' : '#475569', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 2 }}>
-            {t('language')}
-          </label>
+        {/* 50+ Languages Selector */}
+        <div className="hidden sm:flex items-center">
           <select
             id="lang-selector"
+            aria-label="Language Selector"
             value={lang}
             onChange={handleLangChange}
-            style={{
-              background: themeMode === 'contrast' ? '#000000' : 'rgba(15, 23, 42, 0.8)',
-              color: themeMode === 'contrast' ? '#00ff00' : '#f1f5f9',
-              border: `1px solid ${styles.borderColor}`,
-              borderRadius: 4,
-              padding: '2px 6px',
-              fontSize: 10,
-              cursor: 'pointer',
-              outline: 'none',
-              fontFamily: styles.fontFamily,
-            }}
+            className="text-xs px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white/70 dark:bg-slate-800/70 text-slate-800 dark:text-slate-200 outline-none cursor-pointer max-w-[90px]"
           >
             {FIFTY_LANGUAGES.map((l) => (
               <option key={l.code} value={l.code}>
@@ -205,125 +215,100 @@ export function CommandHeader({ connected, peerCount, syncStatus, alertCount, on
           </select>
         </div>
 
-        {/* Text Resizer for AAA Accessibility */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-          <span style={{ fontSize: 8, color: themeMode === 'contrast' ? '#00ff00' : '#475569', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 2 }}>
-            {t('textResizer')}
-          </span>
-          <div style={{ display: 'flex', gap: 2 }}>
-            {(['sm', 'md', 'lg'] as TextSize[]).map((sz) => (
-              <button
-                key={sz}
-                onClick={() => changeTextSize(sz)}
-                style={{
-                  padding: '2px 8px',
-                  background: textSize === sz ? (themeMode === 'contrast' ? '#00ff00' : '#2563eb') : 'transparent',
-                  color: textSize === sz ? (themeMode === 'contrast' ? '#000000' : '#ffffff') : (themeMode === 'contrast' ? '#00ff00' : '#94a3b8'),
-                  border: `1px solid ${styles.borderColor}`,
-                  borderRadius: 3,
-                  fontSize: sz === 'sm' ? 8 : sz === 'md' ? 10 : 12,
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  textTransform: 'uppercase',
-                }}
-              >
-                {sz}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Right — Connections & Theme Switcher */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-        <ConnDot label={t('server')} active={connected} color={themeMode === 'contrast' ? '#00ff00' : '#22c55e'} />
-        <ConnDot label={`${peerCount} ${t('peers')}`} active={peerCount > 0} color={themeMode === 'contrast' ? '#00ff00' : '#38bdf8'} />
-        
-        <div style={{
-          fontSize: 10, fontWeight: 700, padding: '3px 10px', borderRadius: 4,
-          background: syncStatus === 'synced' ? (themeMode === 'contrast' ? '#00ff00' : '#14532d') : syncStatus === 'syncing' ? '#713f12' : '#1e293b',
-          color: syncStatus === 'synced' ? (themeMode === 'contrast' ? '#000000' : '#86efac') : syncStatus === 'syncing' ? '#fde68a' : '#64748b',
-          border: themeMode === 'contrast' ? '1px solid #00ff00' : 'none',
-          letterSpacing: '0.08em',
-        }}>
-          {t('crdt')}: {syncStatus.toUpperCase()}
+        {/* Text Resizer */}
+        <div className="hidden sm:flex items-center gap-0.5 bg-slate-200/50 dark:bg-slate-800/50 p-0.5 rounded-md">
+          {(['sm', 'md', 'lg'] as TextSize[]).map((sz) => (
+            <button
+              key={sz}
+              onClick={() => changeTextSize(sz)}
+              className={`px-1.5 py-0.5 text-[10px] font-bold uppercase rounded cursor-pointer ${
+                textSize === sz
+                  ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-sky-400 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+              }`}
+            >
+              {sz}
+            </button>
+          ))}
         </div>
 
-        {/* AI SITREP Generator Button */}
-        <button
+        {/* SITREP Launcher */}
+        <Button
+          variant="tactical-orange"
+          size="sm"
           onClick={() => {
             onShowSitrep();
             triggerHaptic('success');
           }}
-          style={{
-            padding: '4px 10px',
-            background: themeMode === 'contrast' ? 'transparent' : '#10b981',
-            color: themeMode === 'contrast' ? '#00ff00' : '#ffffff',
-            border: `1px solid ${themeMode === 'contrast' ? '#00ff00' : '#10b981'}`,
-            borderRadius: 4,
-            fontSize: 10,
-            fontWeight: 700,
-            cursor: 'pointer',
-            textTransform: 'uppercase',
-            boxShadow: themeMode === 'contrast' ? '0 0 5px #00ff00' : 'none',
-          }}
+          className="text-xs font-bold"
         >
-          AI SITREP
-        </button>
+          📋 SITREP
+        </Button>
 
-        {/* Theme Mode Toggle Button */}
-        <button
+        {/* Theme Mode Cycle Button */}
+        <Button
+          variant="glass"
+          size="sm"
           onClick={toggleTheme}
-          aria-label={themeMode === 'glass' ? "Switch to Tactical Contrast Mode" : "Switch to Glassmorphism Mode"}
-          style={{
-            padding: '4px 10px',
-            background: 'transparent',
-            color: themeMode === 'contrast' ? '#00ff00' : '#a78bfa',
-            border: `1px solid ${themeMode === 'contrast' ? '#00ff00' : '#a78bfa'}`,
-            borderRadius: 4,
-            fontSize: 10,
-            fontWeight: 700,
-            cursor: 'pointer',
-            textTransform: 'uppercase',
-            boxShadow: themeMode === 'contrast' ? '0 0 5px #00ff00' : 'none',
-          }}
+          className="text-xs font-bold"
+          title="Cycle Theme (Light / Dark / OLED)"
         >
-          {themeMode === 'glass' ? 'Tactical Mode' : 'Glass Mode'}
-        </button>
+          {themeMode === 'light' ? '☀️' : themeMode === 'dark' ? '🌙' : '⚡'}
+        </Button>
       </div>
     </header>
   );
 }
 
-function StatusPill({ label, value, color, pulse }: { label: string; value: string; color: string; pulse?: boolean }) {
-  const { themeMode } = useAppTheme();
+function StatusPill({
+  label,
+  value,
+  color,
+  pulse,
+}: {
+  label: string;
+  value: string;
+  color: string;
+  pulse?: boolean;
+}) {
   return (
-    <div style={{ textAlign: 'center' }}>
-      <div style={{ fontSize: 8, color: themeMode === 'contrast' ? '#00ff00' : '#475569', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 2 }}>{label}</div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 5, justifyContent: 'center' }}>
+    <div className="text-center">
+      <div className="text-[9px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">
+        {label}
+      </div>
+      <div className="flex items-center gap-1.5 justify-center">
         {pulse && (
-          <motion.div
-            animate={{ opacity: [1, 0.3, 1] }}
-            transition={{ duration: 1.2, repeat: Infinity }}
-            style={{ width: 6, height: 6, borderRadius: '50%', background: color }}
+          <span
+            style={{ backgroundColor: color }}
+            className="w-1.5 h-1.5 rounded-full animate-ping"
           />
         )}
-        <span style={{ fontSize: 11, fontWeight: 900, color, letterSpacing: '0.08em' }}>{value}</span>
+        <span style={{ color }} className="text-xs font-black tracking-wide font-tactical">
+          {value}
+        </span>
       </div>
     </div>
   );
 }
 
-function ConnDot({ label, active, color = '#22c55e' }: { label: string; active: boolean; color?: string }) {
-  const { themeMode } = useAppTheme();
+function ConnDot({
+  label,
+  active,
+  color = '#16a34a',
+}: {
+  label: string;
+  active: boolean;
+  color?: string;
+}) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-      <motion.div
-        animate={active ? { opacity: [1, 0.4, 1] } : { opacity: 0.3 }}
-        transition={{ duration: 1.5, repeat: Infinity }}
-        style={{ width: 7, height: 7, borderRadius: '50%', background: active ? color : '#334155' }}
+    <div className="flex items-center gap-1.5">
+      <span
+        style={{ backgroundColor: active ? color : '#64748b' }}
+        className={`w-2 h-2 rounded-full ${active ? 'animate-pulse' : 'opacity-40'}`}
       />
-      <span style={{ fontSize: 10, color: active ? color : (themeMode === 'contrast' ? '#334155' : '#334155'), fontWeight: 600, letterSpacing: '0.06em' }}>{label}</span>
+      <span className="text-xs font-medium text-slate-600 dark:text-slate-400">
+        {label}
+      </span>
     </div>
   );
 }

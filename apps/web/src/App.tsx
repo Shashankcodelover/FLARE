@@ -1,12 +1,12 @@
 import { useEffect, useState, startTransition, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { GeospatialDashboard } from './components/GeospatialDashboard';
-import { ResourcePanel } from './components/ResourcePanel';
-import { AlertFeed } from './components/AlertFeed';
 import { CommandHeader } from './components/CommandHeader';
 import { StatsBar } from './components/StatsBar';
-import { VolunteerPanel } from './components/VolunteerPanel';
-import { MeshTopology } from './components/MeshTopology';
+import { RoleGateway } from './components/gateway/RoleGateway';
+import { HQCommandDeck } from './components/hq/HQCommandDeck';
+import { FieldResponderDeck } from './components/responder/FieldResponderDeck';
+import { LogisticsDeck } from './components/logistics/LogisticsDeck';
+import { Modal, Button } from '@mirage/ui';
 import { useSocket } from './hooks/useSocket';
 import { useP2PSync } from '@mirage/crdt-logic';
 import { useVolunteerSim } from './hooks/useVolunteerSim';
@@ -14,22 +14,26 @@ import { useAppTheme } from './hooks/ThemeContext';
 import { API_URL } from './config';
 import type { GeofenceAlert } from '@mirage/shared-types';
 
+export type DeckView = 'gateway' | 'hq' | 'responder' | 'logistics';
+
 export default function App() {
   const { socket, connected } = useSocket();
   const { peerCount, syncStatus } = useP2PSync(socket);
-  const { styles, themeMode, lang, triggerHaptic, toggleTheme, t } = useAppTheme();
-  
+  const { themeMode, lang, triggerHaptic, toggleTheme } = useAppTheme();
+
+  // Active Deck navigation
+  const [activeDeck, setActiveDeck] = useState<DeckView>(() => {
+    return (localStorage.getItem('mirage_active_deck') as DeckView) || 'gateway';
+  });
+
   const [alerts, setAlerts] = useState<GeofenceAlert[]>([]);
-  const [activePanel, setActivePanel] = useState<'resources' | 'alerts' | 'volunteers' | 'mesh'>('volunteers');
-  const [showSosSlider, setShowSosSlider] = useState(false);
   const [sosTriggered, setSosTriggered] = useState(false);
-  const [sosProgress, setSosProgress] = useState(0);
 
   // FEMA SITREP states
   const [showSitrep, setShowSitrep] = useState(false);
   const [sitrepText, setSitrepText] = useState('');
 
-  // Undo buffer states
+  // 5-second Undo buffer states
   const [pendingAction, setPendingAction] = useState<{
     id: string;
     type: 'dispatch' | 'recall';
@@ -47,12 +51,25 @@ export default function App() {
   const recognitionRef = useRef<any>(null);
 
   const {
-    volunteers, zoneNeeds, dispatchMessages,
-    selectedVolunteer, setSelectedVolunteer,
-    dispatchVolunteer, recallVolunteer,
-    roleIcons, roleColors, zoneConfigs,
+    volunteers,
+    zoneNeeds,
+    dispatchMessages,
+    selectedVolunteer,
+    setSelectedVolunteer,
+    dispatchVolunteer,
+    recallVolunteer,
+    roleIcons,
+    roleColors,
+    zoneConfigs,
   } = useVolunteerSim();
 
+  const handleSelectDeck = (deck: DeckView) => {
+    setActiveDeck(deck);
+    localStorage.setItem('mirage_active_deck', deck);
+    triggerHaptic('tap');
+  };
+
+  // Socket zone breach listener
   useEffect(() => {
     if (!socket) return;
     socket.on('zone:enter', (alert: GeofenceAlert) => {
@@ -61,10 +78,12 @@ export default function App() {
       });
       triggerHaptic('warning');
     });
-    return () => { socket.off('zone:enter'); };
+    return () => {
+      socket.off('zone:enter');
+    };
   }, [socket, triggerHaptic]);
 
-  // Fetch FEMA SITREP report when modal opens
+  // Fetch FEMA SITREP report
   useEffect(() => {
     if (showSitrep) {
       setSitrepText('Loading FEMA ICS briefing...');
@@ -78,37 +97,16 @@ export default function App() {
     }
   }, [showSitrep]);
 
-  // Handle slide gesture for SOS trigger
-  useEffect(() => {
-    let interval: any;
-    if (sosProgress >= 100) {
-      setSosTriggered(true);
-      setShowSosSlider(false);
-      triggerHaptic('sos');
-      // Auto reset after 5 seconds
-      setTimeout(() => {
-        setSosTriggered(false);
-        setSosProgress(0);
-      }, 5000);
-    } else if (sosProgress > 0 && !sosTriggered) {
-      interval = setInterval(() => {
-        setSosProgress((p) => Math.max(0, p - 5));
-      }, 100);
-    }
-    return () => clearInterval(interval);
-  }, [sosProgress, sosTriggered, triggerHaptic]);
-
   // Handle the 5-second Undo countdown
   useEffect(() => {
     if (pendingAction) {
       setUndoTimeLeft(5);
       if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
-      
+
       countdownTimerRef.current = setInterval(() => {
         setUndoTimeLeft((prev) => {
           if (prev <= 1) {
             if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
-            // Execute action
             executePendingAction(pendingAction);
             setPendingAction(null);
             return 0;
@@ -133,8 +131,8 @@ export default function App() {
   };
 
   const handleDispatchClick = (volunteerId: string, zoneId: string) => {
-    const vol = volunteers.find(v => v.id === volunteerId);
-    const zone = zoneConfigs.find(z => z.zoneId === zoneId);
+    const vol = volunteers.find((v) => v.id === volunteerId);
+    const zone = zoneConfigs.find((z) => z.zoneId === zoneId);
     if (!vol || !zone) return;
 
     setPendingAction({
@@ -148,7 +146,7 @@ export default function App() {
   };
 
   const handleRecallClick = (volunteerId: string) => {
-    const vol = volunteers.find(v => v.id === volunteerId);
+    const vol = volunteers.find((v) => v.id === volunteerId);
     if (!vol) return;
 
     setPendingAction({
@@ -168,7 +166,8 @@ export default function App() {
 
   // --- Voice Command Web Speech API Integration ---
   useEffect(() => {
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (SpeechRecognition) {
       const rec = new SpeechRecognition();
       rec.continuous = false;
@@ -220,589 +219,277 @@ export default function App() {
       return;
     }
 
-    if (command.includes('toggle contrast') || command.includes('toggle theme') || command.includes('high contrast') || command.includes('tactical mode')) {
+    if (
+      command.includes('toggle contrast') ||
+      command.includes('toggle theme') ||
+      command.includes('high contrast') ||
+      command.includes('tactical mode')
+    ) {
       toggleTheme();
-      setVoiceFeedback('Toggled high contrast display mode.');
+      setVoiceFeedback('Toggled theme display mode.');
       return;
     }
 
-    if (command.includes('dispatch') || command.includes('send')) {
-      const matchingVol = volunteers.find(v => command.includes(v.name.split(' ')[0].toLowerCase()));
-      const matchingZone = zoneConfigs.find(z => {
-        const zoneWord = z.zoneName.toLowerCase();
-        if (zoneWord.includes('alpha') || zoneWord.includes('la')) return command.includes('la') || command.includes('alpha') || command.includes('wildfire');
-        if (zoneWord.includes('beta') || zoneWord.includes('chicago')) return command.includes('chicago') || command.includes('beta') || command.includes('flood');
-        if (zoneWord.includes('c') || zoneWord.includes('nyc')) return command.includes('nyc') || command.includes('c') || command.includes('evacuation');
-        return false;
-      });
-
-      if (matchingVol && matchingZone) {
-        handleDispatchClick(matchingVol.id, matchingZone.zoneId);
-        setVoiceFeedback(`Command buffered: Send ${matchingVol.name} to ${matchingZone.zoneName}.`);
-        return;
-      }
+    if (command.includes('gateway') || command.includes('home')) {
+      handleSelectDeck('gateway');
+      setVoiceFeedback('Navigating to Role Gateway.');
+      return;
     }
 
-    if (command.includes('recall') || command.includes('return')) {
-      const matchingVol = volunteers.find(v => command.includes(v.name.split(' ')[0].toLowerCase()));
-      if (matchingVol) {
-        handleRecallClick(matchingVol.id);
-        setVoiceFeedback(`Command buffered: Recall ${matchingVol.name}.`);
-        return;
-      }
+    if (command.includes('hq') || command.includes('command')) {
+      handleSelectDeck('hq');
+      setVoiceFeedback('Navigating to HQ Command Deck.');
+      return;
     }
 
-    setVoiceFeedback("Command not recognized. Try saying 'dispatch Sarah to LA' or 'toggle contrast'.");
+    if (command.includes('responder') || command.includes('field')) {
+      handleSelectDeck('responder');
+      setVoiceFeedback('Navigating to Field Responder Deck.');
+      return;
+    }
+
+    if (command.includes('logistics') || command.includes('supply')) {
+      handleSelectDeck('logistics');
+      setVoiceFeedback('Navigating to Logistics Sync Deck.');
+      return;
+    }
+
+    setVoiceFeedback("Command not recognized. Try 'open HQ', 'SOS', or 'toggle theme'.");
     triggerHaptic('warning');
   };
 
-  const isContrast = themeMode === 'contrast';
   const isRtl = lang === 'ar';
 
   return (
-    <div 
+    <div
       dir={isRtl ? 'rtl' : 'ltr'}
-      style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        height: '100vh', 
-        background: styles.appBg, 
-        color: styles.textColor, 
-        fontFamily: styles.fontFamily, 
-        fontSize: styles.fontSize,
-        overflow: 'hidden' 
-      }}
+      className="flex flex-col h-screen w-screen overflow-hidden bg-[var(--bg-canvas)] text-[var(--text-primary)] transition-colors duration-200"
     >
-      <CommandHeader 
-        connected={connected} 
-        peerCount={peerCount} 
-        syncStatus={syncStatus} 
-        alertCount={alerts.length} 
-        onShowSitrep={() => setShowSitrep(true)}
-      />
-      <StatsBar />
-
-      <div style={{ display: 'flex', flex: 1, overflow: 'hidden', minHeight: 0, flexDirection: 'row' }}>
-        {/* Map Container */}
-        <div style={{ flex: 1, position: 'relative', minWidth: 0 }}>
-          <GeospatialDashboard
-            socket={socket}
-            volunteers={volunteers}
-            selectedVolunteerId={selectedVolunteer?.id ?? null}
-            onSelectVolunteer={(v) => setSelectedVolunteer(v)}
-            roleIcons={roleIcons}
-            roleColors={roleColors}
+      {/* Dynamic Role Gateway (Splash Screen) */}
+      {activeDeck === 'gateway' ? (
+        <RoleGateway
+          onSelectRole={(role) => handleSelectDeck(role)}
+          connected={connected}
+          peerCount={peerCount}
+          activeZonesCount={zoneConfigs.length}
+        />
+      ) : (
+        <>
+          {/* Universal Command Header */}
+          <CommandHeader
+            connected={connected}
+            peerCount={peerCount}
+            syncStatus={syncStatus}
+            alertCount={alerts.length}
+            onShowSitrep={() => setShowSitrep(true)}
+            activeDeck={activeDeck}
+            onSelectDeck={handleSelectDeck}
           />
 
-          {/* Voice interface floating bar */}
-          <div style={{
-            position: 'absolute',
-            bottom: 20,
-            left: isRtl ? 'auto' : 20,
-            right: isRtl ? 20 : 'auto',
-            zIndex: 1050,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-          }}>
-            <button
-              onClick={toggleVoiceListening}
-              style={{
-                width: 48,
-                height: 48,
-                borderRadius: '50%',
-                background: isListening ? '#ef4444' : (isContrast ? '#000000' : 'rgba(15, 23, 42, 0.95)'),
-                color: isListening ? '#ffffff' : (isContrast ? '#00ff00' : '#38bdf8'),
-                border: `2px solid ${isListening ? '#ffffff' : styles.borderColor}`,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: isContrast ? 'none' : '0 4px 12px rgba(0,0,0,0.5)',
-                outline: 'none',
-              }}
-              title="Voice Commands"
-            >
-              <span style={{ fontSize: 20 }}>{isListening ? '🎙' : '🎤'}</span>
-            </button>
+          {/* Incident Telemetry Stats Bar */}
+          <StatsBar />
 
-            {/* Voice feedback overlay */}
-            <AnimatePresence>
-              {(isListening || voiceFeedback) && (
+          {/* Operational View Deck with Animated Transitions */}
+          <div className="flex-1 flex overflow-hidden relative">
+            <AnimatePresence mode="wait">
+              {activeDeck === 'hq' && (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.9, x: isRtl ? 10 : -10 }}
-                  animate={{ opacity: 1, scale: 1, x: 0 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  style={{
-                    background: isContrast ? '#000000' : 'rgba(15, 23, 42, 0.95)',
-                    backdropFilter: styles.panelBackdrop,
-                    border: `1px solid ${styles.borderColor}`,
-                    borderRadius: 8,
-                    padding: '8px 14px',
-                    maxWidth: 240,
-                    boxShadow: isContrast ? 'none' : '0 4px 12px rgba(0,0,0,0.5)',
-                  }}
+                  key="hq"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 10 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex-1 flex overflow-hidden"
                 >
-                  <div style={{ fontSize: 8, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                    {isListening ? 'Listening...' : 'Voice Feedback'}
+                  <HQCommandDeck
+                    socket={socket}
+                    volunteers={volunteers}
+                    zoneNeeds={zoneNeeds}
+                    dispatchMessages={dispatchMessages}
+                    selectedVolunteer={selectedVolunteer}
+                    onSelectVolunteer={setSelectedVolunteer}
+                    onDispatch={handleDispatchClick}
+                    onRecall={handleRecallClick}
+                    roleIcons={roleIcons}
+                    roleColors={roleColors}
+                    zoneConfigs={zoneConfigs}
+                    alerts={alerts}
+                    onDismissAlert={(i) => setAlerts((p) => p.filter((_, idx) => idx !== i))}
+                    triggerHaptic={triggerHaptic}
+                  />
+                </motion.div>
+              )}
+
+              {activeDeck === 'responder' && (
+                <motion.div
+                  key="responder"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 10 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex-1 flex overflow-hidden"
+                >
+                  <FieldResponderDeck
+                    socket={socket}
+                    volunteers={volunteers}
+                    selectedVolunteer={selectedVolunteer}
+                    onSelectVolunteer={setSelectedVolunteer}
+                    roleIcons={roleIcons}
+                    roleColors={roleColors}
+                    peerCount={peerCount}
+                    syncStatus={syncStatus}
+                    triggerHaptic={triggerHaptic}
+                    onSosTriggered={() => setSosTriggered(true)}
+                  />
+                </motion.div>
+              )}
+
+              {activeDeck === 'logistics' && (
+                <motion.div
+                  key="logistics"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 10 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex-1 flex overflow-hidden"
+                >
+                  <LogisticsDeck socket={socket} triggerHaptic={triggerHaptic} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Floating Voice Assistant Trigger */}
+            <div className="absolute bottom-6 right-6 z-[1050] flex items-center gap-2">
+              <AnimatePresence>
+                {(isListening || voiceFeedback) && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9, x: 10 }}
+                    animate={{ opacity: 1, scale: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    className="glass-panel px-3 py-2 bg-slate-900/90 text-white rounded-xl shadow-xl max-w-xs border border-sky-500/40"
+                  >
+                    <div className="text-[9px] font-bold uppercase tracking-wider text-sky-400">
+                      {isListening ? 'Listening for command...' : 'Voice Assistant'}
+                    </div>
+                    <div className="text-xs font-semibold mt-0.5 font-mono">
+                      {isListening ? voiceTranscript || 'Say "open HQ" or "SOS"...' : voiceFeedback}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <button
+                onClick={toggleVoiceListening}
+                className={`w-12 h-12 rounded-full flex items-center justify-center text-lg shadow-xl cursor-pointer transition-transform hover:scale-105 active:scale-95 outline-none ${
+                  isListening
+                    ? 'bg-red-600 text-white animate-pulse'
+                    : 'glass-panel bg-slate-900/80 text-sky-400 hover:text-white border border-sky-500/30'
+                }`}
+                title="Voice Assistant"
+              >
+                {isListening ? '🎙️' : '🎤'}
+              </button>
+            </div>
+
+            {/* 5-Second Undo Toast Notification Overlay */}
+            <AnimatePresence>
+              {pendingAction && (
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 30 }}
+                  className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1100] px-4 py-3 rounded-2xl bg-slate-950/95 border-2 border-red-500/80 text-white shadow-2xl flex items-center gap-4 backdrop-blur-xl min-w-[320px] justify-between"
+                >
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-slate-100">
+                      {pendingAction.message}
+                    </span>
+                    <span className="text-[10px] text-red-400 font-mono">
+                      Executing dispatch in {undoTimeLeft}s...
+                    </span>
                   </div>
-                  <div style={{ fontSize: 11, fontWeight: 'bold', color: isContrast ? '#00ff00' : '#f1f5f9', marginTop: 2 }}>
-                    {isListening ? (voiceTranscript || 'Speak now...') : voiceFeedback}
-                  </div>
+                  <Button
+                    variant="tactical-orange"
+                    size="sm"
+                    onClick={handleUndo}
+                    className="font-bold text-xs"
+                  >
+                    UNDO
+                  </Button>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
 
-          {/* Floating alert toasts */}
-          <div style={{ 
-            position: 'absolute', 
-            top: 12, 
-            left: '50%', 
-            transform: 'translateX(-50%)', 
-            zIndex: 1000, 
-            width: 'calc(100% - 24px)',
-            maxWidth: '460px', 
-            pointerEvents: 'none' 
-          }}>
-            <AnimatePresence>
-              {alerts.slice(0, 3).map((alert, i) => (
-                <motion.div
-                  key={`${alert.zoneId}-${alert.timestamp}`}
-                  initial={{ opacity: 0, y: -30, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  style={{
-                    marginBottom: 8, padding: '10px 16px', borderRadius: 8,
-                    background: isContrast
-                      ? '#000000'
-                      : (alert.type === 'enter' ? 'rgba(220,38,38,0.92)' : 'rgba(217,119,6,0.92)'),
-                    backdropFilter: styles.panelBackdrop,
-                    border: `${styles.borderWidth} solid ${
-                      isContrast
-                        ? '#ff3333'
-                        : (alert.type === 'enter' ? '#f87171' : '#fbbf24')
-                    }`,
-                    display: 'flex', alignItems: 'center', gap: 10,
-                    pointerEvents: 'all', 
-                    boxShadow: isContrast ? '0 0 10px #ff3333' : '0 4px 24px rgba(0,0,0,0.5)',
-                  }}
-                >
-                  <span style={{ fontSize: 18 }}>{alert.type === 'enter' ? '🚨' : '✅'}</span>
-                  <div style={{ flex: 1, textAlign: isRtl ? 'right' : 'left' }}>
-                    <div style={{ fontWeight: 800, fontSize: 13, color: isContrast ? '#ff3333' : '#ffffff' }}>
-                      {alert.type === 'enter' ? t('breach') : t('cleared')}
-                    </div>
-                    <div style={{ fontSize: 11, opacity: 0.85 }}>
-                      {t('vol')}: <strong>{alert.responderId.slice(0, 8)}</strong> {alert.type === 'enter' ? 'entered' : 'exited'} <strong>{alert.zoneName}</strong>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={() => {
-                      setAlerts(p => p.filter((_, idx) => idx !== i));
-                      triggerHaptic('tap');
-                    }}
-                    style={{ 
-                      background: 'none', 
-                      border: 'none', 
-                      color: isContrast ? '#ff3333' : 'white', 
-                      cursor: 'pointer', 
-                      fontSize: 16, 
-                      opacity: 0.7, 
-                      pointerEvents: 'all',
-                      outline: 'none',
-                    }}
-                  >✕</button>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-
-          {/* Zone need overlays on map */}
-          <div style={{ 
-            position: 'absolute', 
-            bottom: 80, 
-            left: isRtl ? 'auto' : 12, 
-            right: isRtl ? 12 : 'auto', 
-            zIndex: 1000, 
-            display: 'flex', 
-            flexDirection: 'column', 
-            gap: 6 
-          }}>
-            <AnimatePresence>
-              {zoneNeeds.filter(n => n.status === 'critical-need' || n.status === 'needs-support').map(need => (
-                <motion.div
-                  key={need.zoneId}
-                  initial={{ opacity: 0, x: isRtl ? 20 : -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: isRtl ? 20 : -20 }}
-                  style={{
-                    background: isContrast 
-                      ? '#000000' 
-                      : (need.status === 'critical-need' ? 'rgba(69,10,10,0.95)' : 'rgba(67,20,7,0.95)'),
-                    border: `${styles.borderWidth} solid ${
-                      isContrast
-                        ? '#ff3333'
-                        : (need.status === 'critical-need' ? '#f87171' : '#fb923c')
-                    }`,
-                    borderRadius: 8, padding: '8px 12px', backdropFilter: styles.panelBackdrop,
-                    boxShadow: isContrast ? 'none' : '0 4px 16px rgba(0,0,0,0.5)',
-                  }}
-                >
-                  <div style={{ 
-                    fontSize: 12, 
-                    fontWeight: 800, 
-                    color: isContrast 
-                      ? '#ff3333' 
-                      : (need.status === 'critical-need' ? '#fca5a5' : '#fdba74') 
-                  }}>
-                    {need.status === 'critical-need' ? '🆘 URGENT HELP NEEDED' : '⚠ SUPPORT NEEDED'}
-                  </div>
-                  <div style={{ fontSize: 10, color: isContrast ? '#ff3333' : '#94a3b8', opacity: isContrast ? 0.7 : 1, marginTop: 2 }}>
-                    {need.zoneName} — {need.currentCount}/{need.requiredCount} {t('responders')}
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-
-          {/* Persistent Floating SOS Button */}
-          <div style={{ position: 'absolute', bottom: 20, right: isRtl ? 'auto' : 80, left: isRtl ? 80 : 'auto', zIndex: 1050 }}>
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              onClick={() => {
-                setShowSosSlider(!showSosSlider);
-                triggerHaptic('tap');
-              }}
-              style={{
-                width: 60,
-                height: 60,
-                borderRadius: '50%',
-                background: isContrast ? '#000000' : '#dc2626',
-                color: isContrast ? '#ff3333' : '#ffffff',
-                border: `3px solid ${isContrast ? '#ff3333' : '#ffffff'}`,
-                fontWeight: 900,
-                fontSize: 14,
-                boxShadow: isContrast ? '0 0 15px #ff3333' : '0 4px 20px rgba(220,38,38,0.5)',
-                cursor: 'pointer',
-                outline: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              SOS
-            </motion.button>
-          </div>
-
-          {/* Slide-to-SOS Swipe/Gesture Panel */}
-          <AnimatePresence>
-            {showSosSlider && (
-              <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 50 }}
-                style={{
-                  position: 'absolute',
-                  bottom: 90,
-                  right: isRtl ? 'auto' : 80,
-                  left: isRtl ? 80 : 'auto',
-                  width: 280,
-                  background: isContrast ? '#000000' : 'rgba(15, 23, 42, 0.95)',
-                  backdropFilter: styles.panelBackdrop,
-                  border: `${styles.borderWidth} solid ${isContrast ? '#ff3333' : '#1e3a5f'}`,
-                  borderRadius: 12,
-                  padding: 16,
-                  zIndex: 1050,
-                  boxShadow: isContrast ? 'none' : '0 8px 32px rgba(0,0,0,0.5)',
-                }}
-              >
-                <div style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 12, textAlign: 'center', color: isContrast ? '#ff3333' : '#f87171' }}>
-                  {t('sos')}
-                </div>
-                <div 
-                  style={{
-                    height: 40,
-                    background: '#111827',
-                    borderRadius: 20,
-                    position: 'relative',
-                    overflow: 'hidden',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    border: `1px solid ${isContrast ? '#ff3333' : '#334155'}`,
-                  }}
-                >
-                  <span style={{ fontSize: 10, color: '#4b5563', userSelect: 'none', pointerEvents: 'none' }}>
-                    SLIDE RIGHT TO TRIGGER
-                  </span>
-                  
-                  {/* Slider Handler */}
-                  <motion.div
-                    drag="x"
-                    dragConstraints={{ left: 0, right: 200 }}
-                    dragElastic={0}
-                    onDrag={(_, info) => {
-                      const computed = Math.min(100, Math.max(0, (info.offset.x / 200) * 100));
-                      setSosProgress(computed);
-                      triggerHaptic('tap');
-                    }}
-                    onDragEnd={() => {
-                      if (sosProgress < 100) setSosProgress(0);
-                    }}
-                    style={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: '50%',
-                      background: isContrast ? '#ff3333' : '#dc2626',
-                      position: 'absolute',
-                      left: 2,
-                      cursor: 'grab',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'white',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    →
-                  </motion.div>
-
-                  {/* Fill progress */}
-                  <div 
-                    style={{
-                      position: 'absolute',
-                      left: 0,
-                      top: 0,
-                      bottom: 0,
-                      width: `${sosProgress}%`,
-                      background: isContrast ? 'rgba(255,51,51,0.2)' : 'rgba(220,38,38,0.2)',
-                      pointerEvents: 'none',
-                    }}
-                  />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* SOS Confirmation Dialog */}
+          {/* Full-screen Emergency SOS Beacon Broadcast Overlay */}
           <AnimatePresence>
             {sosTriggered && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: 'rgba(0,0,0,0.85)',
-                  zIndex: 2000,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: 24,
-                }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[2000] bg-black/90 backdrop-blur-xl flex flex-col items-center justify-center p-6 text-center"
               >
                 <motion.div
-                  animate={{ scale: [1, 1.1, 1] }}
+                  animate={{ scale: [1, 1.15, 1] }}
                   transition={{ duration: 0.8, repeat: Infinity }}
-                  style={{ fontSize: 64, marginBottom: 16 }}
+                  className="text-7xl mb-4"
                 >
                   🚨
                 </motion.div>
-                <h1 style={{ color: '#ff3333', fontSize: 28, fontWeight: 900, letterSpacing: '0.1em', marginBottom: 12 }}>
-                  BROADCASTING SOS
+                <h1 className="text-3xl sm:text-4xl font-black tracking-tight font-tactical text-red-500 mb-2 uppercase">
+                  EMERGENCY SOS DISTRESS ACTIVE
                 </h1>
-                <p style={{ color: '#94a3b8', fontSize: 14, textAlign: 'center', maxWidth: 400 }}>
-                  Emergency GPS beacon active. High-priority dispatch requests broadcast to all mesh peers and server coordinators.
+                <p className="text-sm text-slate-300 max-w-md mx-auto mb-6 leading-relaxed">
+                  GPS distress coordinates have been broadcasted across all local WebRTC mesh peers and central incident commanders.
                 </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* Right side drawer / Panel */}
-        <div style={{ 
-          width: 360, 
-          display: 'flex', 
-          flexDirection: 'column', 
-          borderLeft: `${styles.borderWidth} solid ${styles.borderColor}`, 
-          background: styles.panelBg,
-          backdropFilter: styles.panelBackdrop,
-          flexShrink: 0,
-          boxShadow: isContrast ? 'none' : styles.glowShadow,
-        }}>
-          {/* 5-Second Undo Toast Notification Overlay */}
-          <AnimatePresence>
-            {pendingAction && (
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                style={{
-                  margin: 8,
-                  padding: '10px 14px',
-                  background: isContrast ? '#000000' : 'rgba(239, 68, 68, 0.95)',
-                  border: `2px solid ${isContrast ? '#ff3333' : '#ef4444'}`,
-                  borderRadius: 8,
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  boxShadow: isContrast ? 'none' : '0 4px 12px rgba(220,38,38,0.3)',
-                }}
-              >
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span style={{ fontSize: 11, fontWeight: 'bold', color: isContrast ? '#ff3333' : '#ffffff' }}>
-                    {pendingAction.message}
-                  </span>
-                  <span style={{ fontSize: 9, color: isContrast ? '#ff3333' : '#fca5a5', opacity: 0.8 }}>
-                    Executing in {undoTimeLeft}s...
-                  </span>
-                </div>
-                <button
-                  onClick={handleUndo}
-                  style={{
-                    background: isContrast ? '#00ff00' : '#ffffff',
-                    color: '#000000',
-                    border: 'none',
-                    borderRadius: 4,
-                    padding: '4px 10px',
-                    fontSize: 10,
-                    fontWeight: 'bold',
-                    cursor: 'pointer',
-                    outline: 'none',
+                <Button
+                  variant="tactical-orange"
+                  size="lg"
+                  onClick={() => {
+                    setSosTriggered(false);
+                    triggerHaptic('success');
                   }}
+                  className="font-bold px-8"
                 >
-                  UNDO
-                </button>
+                  Cancel / Silence SOS Beacon
+                </Button>
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Thumb-reachable Tabs */}
-          <div style={{ display: 'flex', borderBottom: `${styles.borderWidth} solid ${styles.borderColor}`, flexShrink: 0 }}>
-            {(['volunteers', 'resources', 'alerts', 'mesh'] as const).map((tab) => (
-              <button 
-                key={tab} 
-                onClick={() => {
-                  setActivePanel(tab);
-                  triggerHaptic('tap');
-                }} 
-                style={{
-                  flex: 1, 
-                  padding: '12px 2px', 
-                  fontSize: 10, 
-                  fontWeight: 800,
-                  textTransform: 'uppercase', 
-                  letterSpacing: '0.05em', 
-                  cursor: 'pointer',
-                  background: activePanel === tab ? (isContrast ? '#00ff00' : '#0f2040') : 'transparent',
-                  color: activePanel === tab 
-                    ? (isContrast ? '#000000' : '#38bdf8') 
-                    : (isContrast ? '#00ff00' : '#64748b'),
-                  border: 'none', 
-                  borderBottom: activePanel === tab ? `3px solid ${isContrast ? '#00ff00' : '#38bdf8'}` : '3px solid transparent',
-                  fontFamily: styles.fontFamily,
-                  outline: 'none',
-                }}
-              >
-                {tab === 'alerts' && alerts.length > 0 ? `${t('alerts')} (${alerts.length})` : t(tab)}
-              </button>
-            ))}
-          </div>
-
-          <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
-            {activePanel === 'volunteers' && (
-              <VolunteerPanel
-                volunteers={volunteers}
-                zoneNeeds={zoneNeeds}
-                dispatchMessages={dispatchMessages}
-                selectedVolunteer={selectedVolunteer}
-                onSelect={setSelectedVolunteer}
-                onDispatch={handleDispatchClick}
-                onRecall={handleRecallClick}
-                roleIcons={roleIcons}
-                roleColors={roleColors}
-                zoneConfigs={zoneConfigs}
-              />
-            )}
-            {activePanel === 'resources' && <ResourcePanel socket={socket} />}
-            {activePanel === 'alerts' && <AlertFeed alerts={alerts} onDismiss={(i) => setAlerts(p => p.filter((_, idx) => idx !== i))} />}
-            {activePanel === 'mesh' && <MeshTopology connected={connected} peerCount={peerCount} />}
-          </div>
-        </div>
-      </div>
-
-      {/* FEMA SITREP Report Modal */}
-      <AnimatePresence>
-        {showSitrep && (
-          <div style={{
-            position: 'absolute', inset: 0, zIndex: 1200,
-            background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            padding: 24,
-          }}>
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              style={{
-                width: '100%', maxWidth: '650px', maxHeight: '80%',
-                background: isContrast ? '#000000' : 'rgba(15, 23, 42, 0.98)',
-                backdropFilter: styles.panelBackdrop,
-                border: `2px solid ${styles.borderColor}`,
-                borderRadius: 12, padding: 20,
-                display: 'flex', flexDirection: 'column',
-                boxShadow: isContrast ? 'none' : '0 12px 40px rgba(0,0,0,0.6)',
-              }}
-            >
-              <h2 style={{ fontSize: 16, fontWeight: 900, marginBottom: 12, color: isContrast ? '#00ff00' : '#e2e8f0', textTransform: 'uppercase' }}>
-                📋 FEMA ICS Incident Situation Report
-              </h2>
-              
-              <div style={{ 
-                flex: 1, overflowY: 'auto', background: '#020617', border: `1px solid ${styles.borderColor}`,
-                borderRadius: 6, padding: 14, marginBottom: 16, fontSize: 11, fontFamily: 'monospace',
-                whiteSpace: 'pre-wrap', color: isContrast ? '#00ff00' : '#94a3b8', lineHeight: 1.5,
-                textAlign: 'left',
-              }}>
-                {sitrepText}
-              </div>
-
-              <div style={{ display: 'flex', gap: 10 }}>
-                <button
+          {/* FEMA SITREP Modal */}
+          <Modal
+            isOpen={showSitrep}
+            onClose={() => setShowSitrep(false)}
+            title="📋 FEMA ICS-209 Incident Briefing"
+            maxWidth="max-w-2xl"
+            footer={
+              <div className="flex gap-3 w-full">
+                <Button
+                  variant="tactical-orange"
+                  size="sm"
+                  className="flex-1 font-bold"
                   onClick={() => {
                     navigator.clipboard.writeText(sitrepText);
                     triggerHaptic('success');
                     alert('SITREP copied to clipboard.');
                   }}
-                  style={{
-                    flex: 1, background: isContrast ? 'transparent' : '#2563eb',
-                    color: isContrast ? '#00ff00' : '#ffffff',
-                    border: `1px solid ${isContrast ? '#00ff00' : '#2563eb'}`,
-                    padding: '8px 16px', borderRadius: 6, fontWeight: 'bold', fontSize: 12,
-                    cursor: 'pointer',
-                  }}
                 >
                   Copy Report
-                </button>
-                <button
-                  onClick={() => setShowSitrep(false)}
-                  style={{
-                    flex: 1, background: 'transparent',
-                    color: isContrast ? '#ff3333' : '#94a3b8',
-                    border: `1px solid ${isContrast ? '#ff3333' : '#334155'}`,
-                    padding: '8px 16px', borderRadius: 6, fontWeight: 'bold', fontSize: 12,
-                    cursor: 'pointer',
-                  }}
-                >
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => setShowSitrep(false)}>
                   Close
-                </button>
+                </Button>
               </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+            }
+          >
+            <div className="p-4 rounded-xl bg-slate-950 font-mono text-xs text-slate-200 whitespace-pre-wrap leading-relaxed max-h-[50vh] overflow-y-auto border border-slate-800">
+              {sitrepText}
+            </div>
+          </Modal>
+        </>
+      )}
     </div>
   );
 }

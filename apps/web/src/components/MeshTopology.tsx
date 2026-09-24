@@ -41,8 +41,9 @@ export function MeshTopology({ connected, peerCount }: Props) {
 
       {/* Topology SVG Canvas */}
       <div style={{ 
-        background: '#020617', 
+        background: isContrast ? '#000000' : 'var(--glass-bg)', 
         border: `${styles.borderWidth} solid ${styles.borderColor}`, 
+        backdropFilter: isContrast ? 'none' : 'blur(var(--glass-blur))',
         borderRadius: 8, 
         padding: 8,
         display: 'flex',
@@ -53,7 +54,7 @@ export function MeshTopology({ connected, peerCount }: Props) {
         <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ overflow: 'visible' }}>
           {/* Connector lines to Central Server */}
           {connected && peers.map((peer) => (
-            <line
+            <motion.line
               key={`link-srv-${peer.id}`}
               x1={centerX}
               y1={centerY}
@@ -61,7 +62,9 @@ export function MeshTopology({ connected, peerCount }: Props) {
               y2={peer.y}
               stroke={isContrast ? '#00ff00' : '#1e3a5f'}
               strokeWidth={1.5}
-              strokeDasharray={isContrast ? '4, 4' : undefined}
+              strokeDasharray={isContrast ? '4, 4' : '4 4'}
+              animate={{ strokeDashoffset: [0, -8] }}
+              transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
             />
           ))}
 
@@ -70,7 +73,7 @@ export function MeshTopology({ connected, peerCount }: Props) {
             const nextPeer = peers[(idx + 1) % peers.length];
             if (peer.id === nextPeer?.id) return null;
             return (
-              <line
+              <motion.line
                 key={`link-mesh-${peer.id}`}
                 x1={peer.x}
                 y1={peer.y}
@@ -79,6 +82,8 @@ export function MeshTopology({ connected, peerCount }: Props) {
                 stroke={isContrast ? '#00ff00' : '#0369a1'}
                 strokeWidth={1}
                 strokeDasharray="2, 2"
+                animate={{ strokeDashoffset: [0, -4] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
               />
             );
           })}

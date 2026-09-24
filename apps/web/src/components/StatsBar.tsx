@@ -35,8 +35,9 @@ export function StatsBar() {
   return (
     <div style={{
       display: 'flex',
-      background: styles.statsBarBg,
-      borderBottom: `${styles.borderWidth} solid ${styles.borderColor}`,
+      background: themeMode === 'contrast' ? styles.statsBarBg : 'var(--glass-bg)',
+      backdropFilter: themeMode === 'contrast' ? 'none' : 'var(--glass-blur)',
+      borderBottom: themeMode === 'contrast' ? `${styles.borderWidth} solid ${styles.borderColor}` : '1px solid var(--glass-border)',
       flexShrink: 0,
       overflowX: 'auto',
       fontFamily: styles.fontFamily,
@@ -45,12 +46,12 @@ export function StatsBar() {
         <div key={stat.labelKey} style={{
           flex: '0 0 auto',
           padding: '6px 20px',
-          borderRight: `1px solid ${themeMode === 'contrast' ? '#00ff00' : '#0f2040'}`,
+          borderRight: themeMode === 'contrast' ? '1px solid #00ff00' : '1px solid var(--glass-border)',
           minWidth: 120,
         }}>
           <div style={{ 
             fontSize: 9, 
-            color: themeMode === 'contrast' ? '#00ff00' : '#475569', 
+            color: themeMode === 'contrast' ? '#00ff00' : 'var(--text-secondary)', 
             textTransform: 'uppercase', 
             letterSpacing: '0.12em', 
             marginBottom: 2 
@@ -65,7 +66,7 @@ export function StatsBar() {
               style={{ 
                 fontSize: 18, 
                 fontWeight: 800, 
-                color: themeMode === 'contrast' ? '#00ff00' : (stat.color ?? '#e2e8f0'), 
+                color: themeMode === 'contrast' ? '#00ff00' : (stat.color ?? 'var(--text-primary)'), 
                 fontFamily: 'monospace', 
                 lineHeight: 1 
               }}
@@ -83,7 +84,7 @@ export function StatsBar() {
           {stat.subVal && (
             <div style={{ 
               fontSize: 9, 
-              color: themeMode === 'contrast' ? '#00ff00' : '#334155', 
+              color: themeMode === 'contrast' ? '#00ff00' : 'var(--text-footnote)', 
               opacity: themeMode === 'contrast' ? 0.7 : 1,
               marginTop: 1 
             }}>

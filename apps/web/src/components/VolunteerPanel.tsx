@@ -41,10 +41,10 @@ export function VolunteerPanel({
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', fontFamily: styles.fontFamily, color: styles.textColor }}>
 
       {/* Zone needs overview */}
-      <div style={{ padding: '10px 12px', borderBottom: `${styles.borderWidth} solid ${styles.borderColor}`, flexShrink: 0 }}>
+      <div style={{ padding: '10px 12px', borderBottom: isContrast ? `${styles.borderWidth} solid ${styles.borderColor}` : '1px solid var(--glass-border)', flexShrink: 0 }}>
         <div style={{ 
           fontSize: 9, 
-          color: isContrast ? '#00ff00' : '#475569', 
+          color: isContrast ? '#00ff00' : 'var(--text-footnote)', 
           textTransform: 'uppercase', 
           letterSpacing: '0.12em', 
           marginBottom: 8 
@@ -59,14 +59,14 @@ export function VolunteerPanel({
               key={need.zoneId} 
               style={{ 
                 marginBottom: 8, 
-                background: isContrast ? '#000000' : style.bg, 
+                background: isContrast ? '#000000' : (style.bg || 'var(--glass-bg)'), 
                 border: `${styles.borderWidth} solid ${isContrast ? '#00ff00' : style.color + '33'}`, 
                 borderRadius: 6, 
                 padding: '7px 10px' 
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                <span style={{ fontSize: 11, fontWeight: 600, color: isContrast ? '#00ff00' : '#e2e8f0' }}>{need.zoneName}</span>
+                <span style={{ fontSize: 11, fontWeight: 600, color: isContrast ? '#00ff00' : 'var(--text-primary)' }}>{need.zoneName}</span>
                 <span style={{ 
                   fontSize: 9, 
                   fontWeight: 700, 
@@ -80,7 +80,7 @@ export function VolunteerPanel({
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ flex: 1, height: 4, background: isContrast ? '#111' : '#1e3a5f', borderRadius: 2 }}>
+                <div style={{ flex: 1, height: 4, background: isContrast ? '#111' : 'var(--glass-border)', borderRadius: 2 }}>
                   <motion.div
                     animate={{ width: `${pct}%` }}
                     transition={{ duration: 0.5 }}
@@ -105,7 +105,7 @@ export function VolunteerPanel({
       <div style={{ flex: 1, overflowY: 'auto', padding: '10px 12px' }}>
         <div style={{ 
           fontSize: 9, 
-          color: isContrast ? '#00ff00' : '#475569', 
+          color: isContrast ? '#00ff00' : 'var(--text-footnote)', 
           textTransform: 'uppercase', 
           letterSpacing: '0.12em', 
           marginBottom: 8 
@@ -127,9 +127,10 @@ export function VolunteerPanel({
               style={{
                 marginBottom: 6,
                 background: isSelected 
-                  ? (isContrast ? '#000000' : '#0f2040') 
-                  : (isContrast ? '#000000' : '#0a1628'),
-                border: `${styles.borderWidth} solid ${isSelected ? (isContrast ? '#00ff00' : '#2563eb') : styles.borderColor}`,
+                  ? (isContrast ? '#000000' : 'var(--glass-bg-hover)') 
+                  : (isContrast ? '#000000' : 'var(--glass-bg)'),
+                backdropFilter: isContrast ? 'none' : 'blur(var(--glass-blur))',
+                border: `${styles.borderWidth} solid ${isSelected ? (isContrast ? '#00ff00' : 'var(--blue)') : (isContrast ? styles.borderColor : 'var(--glass-border)')}`,
                 borderRadius: 8,
                 cursor: 'pointer',
                 overflow: 'hidden',
@@ -151,7 +152,7 @@ export function VolunteerPanel({
 
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: isContrast ? '#00ff00' : '#e2e8f0' }}>{v.name}</span>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: isContrast ? '#00ff00' : 'var(--text-primary)' }}>{v.name}</span>
                     <span style={{ 
                       fontSize: 9, 
                       fontWeight: 700, 
@@ -178,34 +179,34 @@ export function VolunteerPanel({
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    style={{ overflow: 'hidden', borderTop: `${styles.borderWidth} solid ${styles.borderColor}` }}
+                    style={{ overflow: 'hidden', borderTop: `${styles.borderWidth} solid ${isContrast ? styles.borderColor : 'var(--glass-border)'}` }}
                   >
                     <div style={{ padding: '10px 12px' }}>
                       {/* Skills */}
                       <div style={{ marginBottom: 10 }}>
-                        <div style={{ fontSize: 9, color: isContrast ? '#00ff00' : '#475569', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 5 }}>{t('skills')}</div>
+                        <div style={{ fontSize: 9, color: isContrast ? '#00ff00' : 'var(--text-footnote)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 5 }}>{t('skills')}</div>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                           {v.skills.map(s => (
                             <span key={s} style={{ 
                               fontSize: 9, 
                               padding: '2px 7px', 
                               borderRadius: 4, 
-                              background: isContrast ? 'transparent' : '#1e3a5f', 
-                              color: isContrast ? '#00ff00' : '#94a3b8',
-                              border: isContrast ? '1px solid #00ff00' : 'none',
+                              background: isContrast ? 'transparent' : 'var(--glass-bg)', 
+                              color: isContrast ? '#00ff00' : 'var(--text-secondary)',
+                              border: isContrast ? '1px solid #00ff00' : '1px solid var(--glass-border)',
                             }}>{s}</span>
                           ))}
                         </div>
                       </div>
 
                       {/* Location */}
-                      <div style={{ fontSize: 10, color: isContrast ? '#00ff00' : '#64748b', marginBottom: 10 }}>
+                      <div style={{ fontSize: 10, color: isContrast ? '#00ff00' : 'var(--text-secondary)', marginBottom: 10 }}>
                         📍 {v.lat.toFixed(4)}, {v.lng.toFixed(4)}
-                        {v.currentZoneId && <span style={{ color: '#f87171', marginLeft: 6 }}>⚠ {t('insideDangerZone')}</span>}
+                        {v.currentZoneId && <span style={{ color: 'var(--rose)', marginLeft: 6 }}>⚠ {t('insideDangerZone')}</span>}
                       </div>
 
                       {/* Dispatch controls */}
-                      <div style={{ fontSize: 9, color: isContrast ? '#00ff00' : '#475569', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>{t('dispatchTo')}</div>
+                      <div style={{ fontSize: 9, color: isContrast ? '#00ff00' : 'var(--text-footnote)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>{t('dispatchTo')}</div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                         {zoneConfigs.map(z => (
                           <button
@@ -220,15 +221,15 @@ export function VolunteerPanel({
                               padding: '5px 10px', borderRadius: 5, fontSize: 10, fontWeight: 600,
                               cursor: v.assignedZoneId === z.zoneId ? 'default' : 'pointer',
                               background: v.assignedZoneId === z.zoneId 
-                                ? (isContrast ? '#000000' : '#1e3a5f') 
-                                : (isContrast ? '#000000' : '#0f2040'),
+                                ? (isContrast ? '#000000' : 'var(--glass-bg)') 
+                                : (isContrast ? '#000000' : 'var(--glass-bg-hover)'),
                               color: v.assignedZoneId === z.zoneId 
-                                ? (isContrast ? '#555555' : '#475569') 
-                                : (isContrast ? '#00ff00' : '#38bdf8'),
+                                ? (isContrast ? '#555555' : 'var(--text-footnote)') 
+                                : (isContrast ? '#00ff00' : 'var(--text-primary)'),
                               border: `1px solid ${
                                 v.assignedZoneId === z.zoneId 
-                                  ? (isContrast ? '#555555' : '#1e3a5f') 
-                                  : (isContrast ? '#00ff00' : '#2563eb')
+                                  ? (isContrast ? '#555555' : 'var(--glass-border)') 
+                                  : (isContrast ? '#00ff00' : 'var(--blue)')
                               }`,
                               textAlign: 'left',
                               outline: 'none',
@@ -247,9 +248,9 @@ export function VolunteerPanel({
                             style={{
                               padding: '5px 10px', borderRadius: 5, fontSize: 10, fontWeight: 600,
                               cursor: 'pointer', 
-                              background: isContrast ? '#000000' : '#1a0a0a', 
-                              color: isContrast ? '#ff3333' : '#f87171',
-                              border: `1px solid ${isContrast ? '#ff3333' : '#7f1d1d'}`, 
+                              background: isContrast ? '#000000' : 'rgba(225, 29, 72, 0.1)', 
+                              color: isContrast ? '#ff3333' : 'var(--rose)',
+                              border: `1px solid ${isContrast ? '#ff3333' : 'var(--rose)'}`, 
                               textAlign: 'left',
                               outline: 'none',
                             }}
@@ -269,10 +270,10 @@ export function VolunteerPanel({
 
       {/* Dispatch log */}
       {dispatchMessages.length > 0 && (
-        <div style={{ borderTop: `${styles.borderWidth} solid ${styles.borderColor}`, padding: '8px 12px', flexShrink: 0, maxHeight: 120, overflowY: 'auto', background: isContrast ? '#000000' : '#040e1c' }}>
-          <div style={{ fontSize: 9, color: isContrast ? '#00ff00' : '#475569', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 5 }}>{t('dispatchLog')}</div>
+        <div style={{ borderTop: isContrast ? `${styles.borderWidth} solid ${styles.borderColor}` : '1px solid var(--glass-border)', padding: '8px 12px', flexShrink: 0, maxHeight: 120, overflowY: 'auto', background: isContrast ? '#000000' : 'var(--glass-bg)', backdropFilter: isContrast ? 'none' : 'blur(var(--glass-blur))' }}>
+          <div style={{ fontSize: 9, color: isContrast ? '#00ff00' : 'var(--text-footnote)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 5 }}>{t('dispatchLog')}</div>
           {dispatchMessages.map((msg, i) => (
-            <div key={i} style={{ fontSize: 10, color: isContrast ? '#00ff00' : '#64748b', opacity: isContrast ? 0.7 : 1, marginBottom: 3, fontFamily: 'monospace' }}>{msg}</div>
+            <div key={i} style={{ fontSize: 10, color: isContrast ? '#00ff00' : 'var(--text-secondary)', opacity: isContrast ? 0.7 : 1, marginBottom: 3, fontFamily: 'monospace' }}>{msg}</div>
           ))}
         </div>
       )}
