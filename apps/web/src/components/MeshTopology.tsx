@@ -29,29 +29,21 @@ export function MeshTopology({ connected, peerCount }: Props) {
   });
 
   return (
-    <div style={{ padding: 12, fontFamily: styles.fontFamily, color: styles.textColor, display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-        <span style={{ fontSize: 10, color: isContrast ? '#00ff00' : '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+    <div className="p-3 flex flex-col h-full" style={{ fontFamily: styles.fontFamily, color: styles.textColor }}>
+      <div className="flex justify-between items-center mb-2.5">
+        <span className={`text-[10px] uppercase tracking-widest ${isContrast ? 'text-green-500' : 'text-slate-500'}`}>
           Mesh Health & Topology
         </span>
-        <span style={{ fontSize: 10, color: isContrast ? '#00ff00' : '#475569' }}>
+        <span className={`text-[10px] ${isContrast ? 'text-green-500' : 'text-slate-600'}`}>
           {peerCount + (connected ? 1 : 0)} Active Nodes
         </span>
       </div>
 
       {/* Topology SVG Canvas */}
-      <div style={{ 
-        background: isContrast ? '#000000' : 'var(--glass-bg)', 
-        border: `${styles.borderWidth} solid ${styles.borderColor}`, 
-        backdropFilter: isContrast ? 'none' : 'blur(var(--glass-blur))',
-        borderRadius: 8, 
-        padding: 8,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'relative'
-      }}>
-        <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ overflow: 'visible' }}>
+      <div 
+        className={`rounded-lg p-2 flex items-center justify-center relative ${isContrast ? 'bg-black border border-green-500' : 'bg-[var(--glass-bg)] border border-[var(--glass-border)] backdrop-blur-[var(--glass-blur)]'}`}
+      >
+        <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="overflow-visible">
           {/* Connector lines to Central Server */}
           {connected && peers.map((peer) => (
             <motion.line
@@ -174,8 +166,8 @@ export function MeshTopology({ connected, peerCount }: Props) {
         </svg>
       </div>
 
-      <div style={{ marginTop: 12, fontSize: 10, color: isContrast ? '#00ff00' : '#64748b', lineHeight: 1.4 }}>
-        <div style={{ fontWeight: 'bold', color: isContrast ? '#00ff00' : '#94a3b8', marginBottom: 4 }}>Mesh Network Parameters</div>
+      <div className={`mt-3 text-[10px] leading-relaxed ${isContrast ? 'text-green-500' : 'text-slate-500'}`}>
+        <div className={`font-bold mb-1 ${isContrast ? 'text-green-500' : 'text-slate-400'}`}>Mesh Network Parameters</div>
         * Protocol: WebRTC full-mesh data channels<br />
         * Multi-hop status: Active (relay enabled)<br />
         * Standalone sync: CRDT delta updates active

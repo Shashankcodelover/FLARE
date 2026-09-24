@@ -92,7 +92,7 @@ export function CommandHeader({
   return (
     <header
       role="banner"
-      className="glass-panel border-b border-slate-200 dark:border-slate-800 px-4 py-2.5 flex items-center justify-between flex-shrink-0 relative z-[1100] gap-4"
+      className="glass-panel border-b border-slate-200 dark:border-slate-800 px-4 py-2.5 flex items-center justify-between flex-shrink-0 relative z-[1300] gap-4"
     >
       {/* Scanline tactical overlay */}
       <div className="scanline-overlay opacity-30" />

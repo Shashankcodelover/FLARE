@@ -114,7 +114,7 @@ P2P MESH: Operating nominally with WebRTC Yjs state replication.`);
         />
 
         {/* Breach Alert Toast Banners */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] w-full max-w-md px-4 pointer-events-none">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1200] w-full max-w-md px-4 pointer-events-none">
           <AnimatePresence>
             {alerts.slice(0, 3).map((alert, i) => (
               <motion.div
@@ -151,7 +151,7 @@ P2P MESH: Operating nominally with WebRTC Yjs state replication.`);
         </div>
 
         {/* Floating Quick Action: SITREP Button */}
-        <div className="absolute top-4 right-4 z-[1000]">
+        <div className="absolute top-4 right-4 z-[1200]">
           <Button
             variant="tactical-orange"
             size="sm"

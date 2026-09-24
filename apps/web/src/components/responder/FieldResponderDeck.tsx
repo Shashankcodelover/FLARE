@@ -80,7 +80,7 @@ export function FieldResponderDeck({
         />
 
         {/* Live GPS Coordinates HUD (Top-Left) */}
-        <div className="absolute top-4 left-4 z-[1000] pointer-events-auto">
+        <div className="absolute top-4 left-4 z-[1200] pointer-events-auto">
           <Card
             variant="glass"
             className="p-3.5 border border-emerald-500/40 bg-slate-950/85 backdrop-blur-xl text-slate-100 shadow-2xl max-w-xs"
@@ -104,7 +104,7 @@ export function FieldResponderDeck({
         </div>
 
         {/* Floating Slide-to-SOS Action Trigger */}
-        <div className="absolute bottom-6 left-6 z-[1050]">
+        <div className="absolute bottom-6 left-6 z-[1250]">
           <div className="relative">
             <motion.button
               whileTap={{ scale: 0.95 }}
@@ -170,7 +170,7 @@ export function FieldResponderDeck({
         </div>
 
         {/* Toggle button for P2P Mesh Panel on small screens */}
-        <div className="absolute top-4 right-4 z-[1000] lg:hidden">
+        <div className="absolute top-4 right-4 z-[1200] lg:hidden">
           <Button
             variant="tactical-green"
             size="sm"
@@ -188,7 +188,7 @@ export function FieldResponderDeck({
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 50 }}
-            className="absolute top-4 right-4 bottom-4 w-80 z-[1000] glass-panel bg-white/80 dark:bg-slate-950/80 border border-emerald-500/30 shadow-2xl rounded-2xl flex flex-col overflow-hidden backdrop-blur-2xl"
+            className="absolute top-4 right-4 bottom-4 w-80 z-[1200] glass-panel bg-white/80 dark:bg-slate-950/80 border border-emerald-500/30 shadow-2xl rounded-2xl flex flex-col overflow-hidden backdrop-blur-2xl"
           >
             {/* Header */}
             <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">

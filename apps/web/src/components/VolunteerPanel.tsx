@@ -38,17 +38,10 @@ export function VolunteerPanel({
   const isContrast = themeMode === 'contrast';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', fontFamily: styles.fontFamily, color: styles.textColor }}>
-
+    <div className="flex flex-col h-full" style={{ fontFamily: styles.fontFamily, color: styles.textColor }}>
       {/* Zone needs overview */}
-      <div style={{ padding: '10px 12px', borderBottom: isContrast ? `${styles.borderWidth} solid ${styles.borderColor}` : '1px solid var(--glass-border)', flexShrink: 0 }}>
-        <div style={{ 
-          fontSize: 9, 
-          color: isContrast ? '#00ff00' : 'var(--text-footnote)', 
-          textTransform: 'uppercase', 
-          letterSpacing: '0.12em', 
-          marginBottom: 8 
-        }}>
+      <div className={`px-3 py-2.5 shrink-0 border-b ${isContrast ? 'border-green-500' : 'border-[var(--glass-border)]'}`}>
+        <div className={`text-[9px] uppercase tracking-widest mb-2 ${isContrast ? 'text-green-500' : 'text-[var(--text-footnote)]'}`}>
           {t('zoneCoverage')}
         </div>
         {zoneNeeds.map(need => {
@@ -57,42 +50,33 @@ export function VolunteerPanel({
           return (
             <div 
               key={need.zoneId} 
-              style={{ 
-                marginBottom: 8, 
-                background: isContrast ? '#000000' : (style.bg || 'var(--glass-bg)'), 
-                border: `${styles.borderWidth} solid ${isContrast ? '#00ff00' : style.color + '33'}`, 
-                borderRadius: 6, 
-                padding: '7px 10px' 
-              }}
+              className={`mb-2 rounded-md px-2.5 py-1.5 border ${isContrast ? 'bg-black border-green-500' : ''}`}
+              style={!isContrast ? { backgroundColor: style.bg, borderColor: style.color + '33' } : undefined}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                <span style={{ fontSize: 11, fontWeight: 600, color: isContrast ? '#00ff00' : 'var(--text-primary)' }}>{need.zoneName}</span>
-                <span style={{ 
-                  fontSize: 9, 
-                  fontWeight: 700, 
-                  color: isContrast ? '#00ff00' : style.color, 
-                  background: isContrast ? '#000000' : style.bg, 
-                  border: `1px solid ${isContrast ? '#00ff00' : style.color + '55'}`, 
-                  padding: '1px 6px', 
-                  borderRadius: 3 
-                }}>
+              <div className="flex justify-between items-center mb-1">
+                <span className={`text-[11px] font-semibold ${isContrast ? 'text-green-500' : 'text-[var(--text-primary)]'}`}>
+                  {need.zoneName}
+                </span>
+                <span 
+                  className={`text-[9px] font-bold px-1.5 py-[1px] rounded-sm border ${isContrast ? 'text-green-500 bg-black border-green-500' : ''}`}
+                  style={!isContrast ? { color: style.color, backgroundColor: style.bg, borderColor: style.color + '55' } : undefined}
+                >
                   {style.icon} {t(style.labelKey)}
                 </span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ flex: 1, height: 4, background: isContrast ? '#111' : 'var(--glass-border)', borderRadius: 2 }}>
+              <div className="flex items-center gap-2">
+                <div className={`flex-1 h-1 rounded-full ${isContrast ? 'bg-[#111]' : 'bg-[var(--glass-border)]'}`}>
                   <motion.div
                     animate={{ width: `${pct}%` }}
                     transition={{ duration: 0.5 }}
-                    style={{ 
-                      height: '100%', 
-                      background: isContrast ? '#00ff00' : style.color, 
-                      borderRadius: 2,
-                      boxShadow: isContrast ? '0 0 5px #00ff00' : 'none'
-                    }}
+                    className={`h-full rounded-full ${isContrast ? 'bg-green-500 shadow-[0_0_5px_#00ff00]' : ''}`}
+                    style={!isContrast ? { backgroundColor: style.color } : undefined}
                   />
                 </div>
-                <span style={{ fontSize: 10, color: isContrast ? '#00ff00' : style.color, fontFamily: 'monospace', whiteSpace: 'nowrap' }}>
+                <span 
+                  className={`text-[10px] font-mono whitespace-nowrap ${isContrast ? 'text-green-500' : ''}`} 
+                  style={!isContrast ? { color: style.color } : undefined}
+                >
                   {need.currentCount}/{need.requiredCount}
                 </span>
               </div>
@@ -102,14 +86,8 @@ export function VolunteerPanel({
       </div>
 
       {/* Volunteer list */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '10px 12px' }}>
-        <div style={{ 
-          fontSize: 9, 
-          color: isContrast ? '#00ff00' : 'var(--text-footnote)', 
-          textTransform: 'uppercase', 
-          letterSpacing: '0.12em', 
-          marginBottom: 8 
-        }}>
+      <div className="flex-1 overflow-y-auto px-3 py-2.5 scrollbar-thin scrollbar-thumb-gray-500 hover:scrollbar-thumb-gray-400">
+        <div className={`text-[9px] uppercase tracking-wider mb-2 ${isContrast ? 'text-green-500' : 'text-[var(--text-footnote)]'}`}>
           {t('volunteers')} ({volunteers.length})
         </div>
 
@@ -124,48 +102,38 @@ export function VolunteerPanel({
                 onSelect(isSelected ? null : v);
                 triggerHaptic('tap');
               }}
-              style={{
-                marginBottom: 6,
-                background: isSelected 
-                  ? (isContrast ? '#000000' : 'var(--glass-bg-hover)') 
-                  : (isContrast ? '#000000' : 'var(--glass-bg)'),
-                backdropFilter: isContrast ? 'none' : 'blur(var(--glass-blur))',
-                border: `${styles.borderWidth} solid ${isSelected ? (isContrast ? '#00ff00' : 'var(--blue)') : (isContrast ? styles.borderColor : 'var(--glass-border)')}`,
-                borderRadius: 8,
-                cursor: 'pointer',
-                overflow: 'hidden',
-                boxShadow: isContrast ? 'none' : styles.glowShadow,
-              }}
+              className={`mb-1.5 rounded-lg cursor-pointer overflow-hidden transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 border ${
+                isSelected 
+                  ? (isContrast ? 'bg-black border-green-500' : 'bg-[var(--glass-bg-hover)] border-[var(--blue)] shadow-md') 
+                  : (isContrast ? 'bg-black border-[var(--glass-border)]' : 'bg-[var(--glass-bg)] border-[var(--glass-border)]')
+              }`}
             >
               {/* Volunteer row */}
-              <div style={{ padding: '8px 10px', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div className="px-2.5 py-2 flex items-center gap-2">
                 {/* Avatar */}
-                <div style={{
-                  width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
-                  background: isContrast ? 'transparent' : roleColors[v.role] + '22',
-                  border: `2px solid ${isContrast ? '#00ff00' : roleColors[v.role]}`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 14,
-                }}>
+                <div 
+                  className={`w-8 h-8 rounded-full shrink-0 flex items-center justify-center text-sm border-2 ${isContrast ? 'bg-transparent border-green-500' : ''}`}
+                  style={!isContrast ? { backgroundColor: roleColors[v.role] + '22', borderColor: roleColors[v.role] } : undefined}
+                >
                   {v.gender === 'female' ? '👩' : '👨'}
                 </div>
 
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: isContrast ? '#00ff00' : 'var(--text-primary)' }}>{v.name}</span>
-                    <span style={{ 
-                      fontSize: 9, 
-                      fontWeight: 700, 
-                      padding: '1px 6px', 
-                      borderRadius: 3, 
-                      background: isContrast ? '#000000' : st.bg, 
-                      color: isContrast ? '#00ff00' : st.color, 
-                      border: `1px solid ${isContrast ? '#00ff00' : st.color + '44'}` 
-                    }}>
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-center">
+                    <span className={`text-xs font-semibold truncate ${isContrast ? 'text-green-500' : 'text-[var(--text-primary)]'}`}>
+                      {v.name}
+                    </span>
+                    <span 
+                      className={`text-[9px] font-bold px-1.5 py-[1px] rounded-sm border ml-2 shrink-0 ${isContrast ? 'bg-black text-green-500 border-green-500' : ''}`}
+                      style={!isContrast ? { backgroundColor: st.bg, color: st.color, borderColor: st.color + '44' } : undefined}
+                    >
                       {t(st.labelKey)}
                     </span>
                   </div>
-                  <div style={{ fontSize: 10, color: isContrast ? '#00ff00' : roleColors[v.role], marginTop: 1 }}>
+                  <div 
+                    className={`text-[10px] mt-0.5 ${isContrast ? 'text-green-500' : ''}`} 
+                    style={!isContrast ? { color: roleColors[v.role] } : undefined}
+                  >
                     {roleIcons[v.role]} {v.role.charAt(0).toUpperCase() + v.role.slice(1)}
                   </div>
                 </div>
@@ -179,35 +147,41 @@ export function VolunteerPanel({
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    style={{ overflow: 'hidden', borderTop: `${styles.borderWidth} solid ${isContrast ? styles.borderColor : 'var(--glass-border)'}` }}
+                    className={`overflow-hidden border-t ${isContrast ? 'border-green-500' : 'border-[var(--glass-border)]'}`}
                   >
-                    <div style={{ padding: '10px 12px' }}>
+                    <div className="px-3 py-2.5">
                       {/* Skills */}
-                      <div style={{ marginBottom: 10 }}>
-                        <div style={{ fontSize: 9, color: isContrast ? '#00ff00' : 'var(--text-footnote)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 5 }}>{t('skills')}</div>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                      <div className="mb-2.5">
+                        <div className={`text-[9px] uppercase tracking-wider mb-1.5 ${isContrast ? 'text-green-500' : 'text-[var(--text-footnote)]'}`}>
+                          {t('skills')}
+                        </div>
+                        <div className="flex flex-wrap gap-1">
                           {v.skills.map(s => (
-                            <span key={s} style={{ 
-                              fontSize: 9, 
-                              padding: '2px 7px', 
-                              borderRadius: 4, 
-                              background: isContrast ? 'transparent' : 'var(--glass-bg)', 
-                              color: isContrast ? '#00ff00' : 'var(--text-secondary)',
-                              border: isContrast ? '1px solid #00ff00' : '1px solid var(--glass-border)',
-                            }}>{s}</span>
+                            <span 
+                              key={s} 
+                              className={`text-[9px] px-2 py-0.5 rounded border ${isContrast ? 'bg-transparent text-green-500 border-green-500' : 'bg-[var(--glass-bg)] text-[var(--text-secondary)] border-[var(--glass-border)]'}`}
+                            >
+                              {s}
+                            </span>
                           ))}
                         </div>
                       </div>
 
                       {/* Location */}
-                      <div style={{ fontSize: 10, color: isContrast ? '#00ff00' : 'var(--text-secondary)', marginBottom: 10 }}>
+                      <div className={`text-[10px] mb-2.5 ${isContrast ? 'text-green-500' : 'text-[var(--text-secondary)]'}`}>
                         📍 {v.lat.toFixed(4)}, {v.lng.toFixed(4)}
-                        {v.currentZoneId && <span style={{ color: 'var(--rose)', marginLeft: 6 }}>⚠ {t('insideDangerZone')}</span>}
+                        {v.currentZoneId && (
+                          <span className="text-[var(--rose)] ml-1.5 font-medium">
+                            ⚠ {t('insideDangerZone')}
+                          </span>
+                        )}
                       </div>
 
                       {/* Dispatch controls */}
-                      <div style={{ fontSize: 9, color: isContrast ? '#00ff00' : 'var(--text-footnote)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 6 }}>{t('dispatchTo')}</div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                      <div className={`text-[9px] uppercase tracking-wider mb-1.5 ${isContrast ? 'text-green-500' : 'text-[var(--text-footnote)]'}`}>
+                        {t('dispatchTo')}
+                      </div>
+                      <div className="flex flex-col gap-1">
                         {zoneConfigs.map(z => (
                           <button
                             key={z.zoneId}
@@ -217,23 +191,11 @@ export function VolunteerPanel({
                               triggerHaptic('success');
                             }}
                             disabled={v.assignedZoneId === z.zoneId}
-                            style={{
-                              padding: '5px 10px', borderRadius: 5, fontSize: 10, fontWeight: 600,
-                              cursor: v.assignedZoneId === z.zoneId ? 'default' : 'pointer',
-                              background: v.assignedZoneId === z.zoneId 
-                                ? (isContrast ? '#000000' : 'var(--glass-bg)') 
-                                : (isContrast ? '#000000' : 'var(--glass-bg-hover)'),
-                              color: v.assignedZoneId === z.zoneId 
-                                ? (isContrast ? '#555555' : 'var(--text-footnote)') 
-                                : (isContrast ? '#00ff00' : 'var(--text-primary)'),
-                              border: `1px solid ${
-                                v.assignedZoneId === z.zoneId 
-                                  ? (isContrast ? '#555555' : 'var(--glass-border)') 
-                                  : (isContrast ? '#00ff00' : 'var(--blue)')
-                              }`,
-                              textAlign: 'left',
-                              outline: 'none',
-                            }}
+                            className={`px-2.5 py-1.5 rounded text-[10px] font-semibold text-left border outline-none transition-colors focus-visible:ring-2 focus-visible:ring-sky-500 ${
+                              v.assignedZoneId === z.zoneId
+                                ? (isContrast ? 'bg-black text-[#555] border-[#555] cursor-default' : 'bg-[var(--glass-bg)] text-[var(--text-footnote)] border-[var(--glass-border)] cursor-default')
+                                : (isContrast ? 'bg-black text-green-500 border-green-500 hover:bg-green-500/10 cursor-pointer' : 'bg-[var(--glass-bg-hover)] text-[var(--text-primary)] border-[var(--blue)] cursor-pointer hover:bg-white/10')
+                            }`}
                           >
                             {v.assignedZoneId === z.zoneId ? `✓ ${t('assigned')}` : `→ ${t('sendTo')}`} {z.zoneName}
                           </button>
@@ -245,15 +207,9 @@ export function VolunteerPanel({
                               onRecall(v.id); 
                               triggerHaptic('warning');
                             }}
-                            style={{
-                              padding: '5px 10px', borderRadius: 5, fontSize: 10, fontWeight: 600,
-                              cursor: 'pointer', 
-                              background: isContrast ? '#000000' : 'rgba(225, 29, 72, 0.1)', 
-                              color: isContrast ? '#ff3333' : 'var(--rose)',
-                              border: `1px solid ${isContrast ? '#ff3333' : 'var(--rose)'}`, 
-                              textAlign: 'left',
-                              outline: 'none',
-                            }}
+                            className={`px-2.5 py-1.5 rounded text-[10px] font-semibold text-left border outline-none cursor-pointer mt-1 transition-colors focus-visible:ring-2 focus-visible:ring-red-500 ${
+                              isContrast ? 'bg-black text-[#ff3333] border-[#ff3333] hover:bg-[#ff3333]/10' : 'bg-[rgba(225,29,72,0.1)] text-[var(--rose)] border-[var(--rose)] hover:bg-[rgba(225,29,72,0.2)]'
+                            }`}
                           >
                             ↩ {t('recallToBase')}
                           </button>
@@ -270,10 +226,16 @@ export function VolunteerPanel({
 
       {/* Dispatch log */}
       {dispatchMessages.length > 0 && (
-        <div style={{ borderTop: isContrast ? `${styles.borderWidth} solid ${styles.borderColor}` : '1px solid var(--glass-border)', padding: '8px 12px', flexShrink: 0, maxHeight: 120, overflowY: 'auto', background: isContrast ? '#000000' : 'var(--glass-bg)', backdropFilter: isContrast ? 'none' : 'blur(var(--glass-blur))' }}>
-          <div style={{ fontSize: 9, color: isContrast ? '#00ff00' : 'var(--text-footnote)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 5 }}>{t('dispatchLog')}</div>
+        <div className={`p-2.5 shrink-0 max-h-[120px] overflow-y-auto border-t z-20 shadow-[0_-4px_10px_rgba(0,0,0,0.2)] ${
+          isContrast ? 'bg-black border-green-500' : 'bg-[var(--glass-bg)] backdrop-blur-[var(--glass-blur)] border-[var(--glass-border)]'
+        }`}>
+          <div className={`text-[9px] uppercase tracking-wider mb-1.5 ${isContrast ? 'text-green-500' : 'text-[var(--text-footnote)]'}`}>
+            {t('dispatchLog')}
+          </div>
           {dispatchMessages.map((msg, i) => (
-            <div key={i} style={{ fontSize: 10, color: isContrast ? '#00ff00' : 'var(--text-secondary)', opacity: isContrast ? 0.7 : 1, marginBottom: 3, fontFamily: 'monospace' }}>{msg}</div>
+            <div key={i} className={`text-[10px] mb-1 font-mono break-words ${isContrast ? 'text-green-500 opacity-70' : 'text-[var(--text-secondary)]'}`}>
+              {msg}
+            </div>
           ))}
         </div>
       )}

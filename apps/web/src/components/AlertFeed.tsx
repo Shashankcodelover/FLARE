@@ -12,19 +12,21 @@ export function AlertFeed({ alerts, onDismiss }: Props) {
   const isContrast = themeMode === 'contrast';
 
   return (
-    <div style={{ padding: 12, fontFamily: styles.fontFamily, color: styles.textColor }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-        <span style={{ fontSize: 10, color: isContrast ? '#00ff00' : '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+    <div className="p-3" style={{ fontFamily: styles.fontFamily, color: styles.textColor }}>
+      <div className="flex justify-between items-center mb-2.5">
+        <span className={`text-[10px] uppercase tracking-[0.1em] ${isContrast ? 'text-green-500' : 'text-slate-500'}`}>
           Alert Log
         </span>
-        <span style={{ fontSize: 10, color: isContrast ? '#00ff00' : '#475569' }}>{alerts.length} events</span>
+        <span className={`text-[10px] ${isContrast ? 'text-green-500' : 'text-slate-600'}`}>
+          {alerts.length} events
+        </span>
       </div>
 
       {alerts.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '32px 0', color: isContrast ? '#00ff00' : 'var(--text-secondary)' }}>
-          <div style={{ fontSize: 28, marginBottom: 8 }}>✅</div>
-          <div style={{ fontSize: 12 }}>No active alerts</div>
-          <div style={{ fontSize: 10, marginTop: 4, color: isContrast ? '#00ff00' : 'var(--text-footnote)', opacity: isContrast ? 0.7 : 1 }}>All zones clear</div>
+        <div className={`text-center py-8 ${isContrast ? 'text-green-500' : 'text-[var(--text-secondary)]'}`}>
+          <div className="text-[28px] mb-2">✅</div>
+          <div className="text-xs">No active alerts</div>
+          <div className={`text-[10px] mt-1 ${isContrast ? 'text-green-500 opacity-70' : 'text-[var(--text-footnote)]'}`}>All zones clear</div>
         </div>
       )}
 
@@ -35,35 +37,31 @@ export function AlertFeed({ alerts, onDismiss }: Props) {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className={!isContrast ? 'glass-card' : ''}
+            className={`mb-2.5 relative rounded-lg p-3 ${!isContrast ? 'glass-card' : ''}`}
             style={{
-              marginBottom: 10,
               background: isContrast 
                 ? '#000000' 
                 : (alert.type === 'enter' ? 'rgba(225, 29, 72, 0.05)' : 'rgba(14, 156, 116, 0.05)'),
               border: isContrast
                 ? `2px solid ${alert.type === 'enter' ? '#ff3333' : '#00ff00'}`
                 : `1px solid ${alert.type === 'enter' ? 'rgba(225, 29, 72, 0.3)' : 'rgba(14, 156, 116, 0.3)'}`,
-              borderRadius: 8,
-              padding: '12px',
-              position: 'relative',
               boxShadow: isContrast ? 'none' : 'var(--glass-shadow)',
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-                <span style={{ fontSize: 18, lineHeight: 1.2 }}>{alert.type === 'enter' ? '🚨' : '✅'}</span>
+            <div className="flex justify-between items-start">
+              <div className="flex gap-2.5 items-start">
+                <span className="text-lg leading-[1.2]">{alert.type === 'enter' ? '🚨' : '✅'}</span>
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: isContrast ? (alert.type === 'enter' ? '#ff3333' : '#00ff00') : (alert.type === 'enter' ? 'var(--rose)' : 'var(--mint)') }}>
+                  <div className={`text-xs font-bold ${isContrast ? (alert.type === 'enter' ? 'text-[#ff3333]' : 'text-green-500') : (alert.type === 'enter' ? 'text-[var(--rose)]' : 'text-[var(--mint)]')}`}>
                     {alert.type === 'enter' ? t('breach') : t('cleared')}
                   </div>
-                  <div style={{ fontSize: 11, color: isContrast ? '#00ff00' : 'var(--text-secondary)', marginTop: 4 }}>
-                    Zone: <strong style={{ color: isContrast ? '#00ff00' : 'var(--text-primary)' }}>{alert.zoneName}</strong>
+                  <div className={`text-[11px] mt-1 ${isContrast ? 'text-green-500' : 'text-[var(--text-secondary)]'}`}>
+                    Zone: <strong className={isContrast ? 'text-green-500' : 'text-[var(--text-primary)]'}>{alert.zoneName}</strong>
                   </div>
-                  <div style={{ fontSize: 10, color: isContrast ? '#00ff00' : 'var(--text-footnote)', marginTop: 2 }}>
+                  <div className={`text-[10px] mt-0.5 ${isContrast ? 'text-green-500' : 'text-[var(--text-footnote)]'}`}>
                     Responder: {alert.responderId.slice(0, 12)}
                   </div>
-                  <div style={{ fontSize: 9, color: isContrast ? '#00ff00' : 'var(--text-footnote)', marginTop: 4 }}>
+                  <div className={`text-[9px] mt-1 ${isContrast ? 'text-green-500' : 'text-[var(--text-footnote)]'}`}>
                     {new Date(alert.timestamp).toLocaleTimeString()}
                   </div>
                 </div>
@@ -73,16 +71,8 @@ export function AlertFeed({ alerts, onDismiss }: Props) {
                   onDismiss(i);
                   triggerHaptic('tap');
                 }}
-                style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  color: isContrast ? '#ff3333' : 'var(--text-footnote)', 
-                  cursor: 'pointer', 
-                  fontSize: 14, 
-                  padding: 4,
-                  outline: 'none',
-                  transition: 'color 0.2s',
-                }}
+                className={`bg-transparent border-none cursor-pointer text-sm p-1 outline-none transition-colors duration-200 hover:opacity-75 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-slate-400 rounded-full ${isContrast ? 'text-[#ff3333]' : 'text-[var(--text-footnote)]'}`}
+                aria-label="Dismiss Alert"
               >✕</button>
             </div>
           </motion.div>
