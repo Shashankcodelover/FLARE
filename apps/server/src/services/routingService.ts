@@ -1,4 +1,6 @@
+import mongoose from 'mongoose';
 import { DangerZoneModel } from '../models/DangerZone';
+import { inMemoryZones } from '../memory-store';
 import logger from '../logger';
 
 interface Node {
@@ -25,7 +27,12 @@ export async function calculateOptimalRoute(
 ): Promise<[number, number][]> {
   try {
     // 1. Fetch active danger zones to check intersection penalties
-    const activeZones = await DangerZoneModel.find({ active: true });
+    let activeZones: any[] = [];
+    if (mongoose.connection.readyState === 1) {
+      activeZones = await DangerZoneModel.find({ active: true });
+    } else {
+      activeZones = inMemoryZones.filter(z => z.active);
+    }
 
     // Helper to calculate danger penalty multiplier at a point
     const getPointPenaltyMultiplier = (lng: number, lat: number): number => {

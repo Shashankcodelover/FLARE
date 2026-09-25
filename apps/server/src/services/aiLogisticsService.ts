@@ -1,6 +1,8 @@
+import mongoose from 'mongoose';
 import { ResourceHubModel } from '../models/ResourceHub';
 import { DangerZoneModel } from '../models/DangerZone';
 import { ResponderModel } from '../models/Responder';
+import { inMemoryHubs, inMemoryZones } from '../memory-store';
 import logger from '../logger';
 
 interface DepletionPrediction {
@@ -25,9 +27,19 @@ interface DepletionPrediction {
  */
 export async function predictResourceBurnRates(): Promise<DepletionPrediction[]> {
   try {
-    const hubs = await ResourceHubModel.find();
-    const activeZones = await DangerZoneModel.find({ active: true });
-    const responders = await ResponderModel.find({ online: true });
+    let hubs: any[] = [];
+    let activeZones: any[] = [];
+    let responders: any[] = [];
+
+    if (mongoose.connection.readyState === 1) {
+      hubs = await ResourceHubModel.find();
+      activeZones = await DangerZoneModel.find({ active: true });
+      responders = await ResponderModel.find({ online: true });
+    } else {
+      hubs = inMemoryHubs;
+      activeZones = inMemoryZones.filter(z => z.active);
+      responders = [{ name: 'Rescue Alpha-1', online: true, location: { type: 'Point', coordinates: [-118.25, 34.05] } }];
+    }
 
     const predictions: DepletionPrediction[] = [];
 
@@ -111,9 +123,19 @@ export async function predictResourceBurnRates(): Promise<DepletionPrediction[]>
  */
 export async function generateFemaSitrep(): Promise<string> {
   try {
-    const activeZones = await DangerZoneModel.find({ active: true });
-    const hubs = await ResourceHubModel.find();
-    const responders = await ResponderModel.find();
+    let activeZones: any[] = [];
+    let hubs: any[] = [];
+    let responders: any[] = [];
+
+    if (mongoose.connection.readyState === 1) {
+      activeZones = await DangerZoneModel.find({ active: true });
+      hubs = await ResourceHubModel.find();
+      responders = await ResponderModel.find();
+    } else {
+      activeZones = inMemoryZones.filter(z => z.active);
+      hubs = inMemoryHubs;
+      responders = [{ name: 'Rescue Alpha-1', online: true, location: { type: 'Point', coordinates: [-118.25, 34.05] } }];
+    }
     const burnPredictions = await predictResourceBurnRates();
 
     const criticalItems = burnPredictions.filter((p) => p.status === 'critical');

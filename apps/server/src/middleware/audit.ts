@@ -35,7 +35,7 @@ export function auditLog(resourceType: string) {
         action: `${req.method} ${resourceType}`,
         userId: req.user?.sub,
         resourceType,
-        resourceId: (req.params.id as string) || (req.params.hubId as string) || undefined,
+        resourceId: (req.params?.id as string) || (req.params?.hubId as string) || undefined,
         ip: Array.isArray(req.ip) ? req.ip[0] : (req.ip as string | undefined),
         method: req.method,
         path: req.originalUrl,

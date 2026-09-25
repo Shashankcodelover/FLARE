@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import mongoose from 'mongoose';
 import { MessageModel } from '../models/Message';
 import { validate } from '../middleware/validate';
 import { z } from 'zod';
@@ -14,16 +15,25 @@ const createMessageSchema = z.object({
   priority: z.enum(['critical', 'status', 'normal']).default('normal'),
 });
 
+const inMemoryMessages: any[] = [];
+
 /**
  * GET /api/v1/comms/messages/:zoneId
  * Returns recent messages in a zone channel feed.
  */
 commsRouter.get('/messages/:zoneId', async (req, res) => {
   try {
-    const messages = await MessageModel.find({ zoneId: req.params.zoneId })
-      .sort({ timestamp: -1 })
-      .limit(50);
-    res.json(messages.reverse()); // return chronological order
+    if (mongoose.connection.readyState === 1) {
+      const messages = await MessageModel.find({ zoneId: req.params.zoneId })
+        .sort({ timestamp: -1 })
+        .limit(50);
+      return res.json(messages.reverse()); // return chronological order
+    }
+
+    const filtered = inMemoryMessages
+      .filter(m => m.zoneId === req.params.zoneId)
+      .slice(-50);
+    return res.json(filtered);
   } catch (err) {
     logger.error({ err, zoneId: req.params.zoneId }, 'Failed to fetch messages');
     res.status(500).json({ error: 'Failed to fetch communications feed' });
@@ -36,7 +46,18 @@ commsRouter.get('/messages/:zoneId', async (req, res) => {
  */
 commsRouter.post('/messages', validate(createMessageSchema), async (req, res) => {
   try {
-    const msg = await MessageModel.create(req.body);
+    let msg: any;
+    if (mongoose.connection.readyState === 1) {
+      msg = await MessageModel.create(req.body);
+    } else {
+      msg = {
+        _id: 'msg-' + Date.now(),
+        ...req.body,
+        timestamp: new Date().toISOString(),
+      };
+      inMemoryMessages.push(msg);
+    }
+
     const io = req.app.get('io');
     if (io) {
       // Broadcast to socket subscribers

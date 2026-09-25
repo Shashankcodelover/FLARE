@@ -1,4 +1,4 @@
-import { Router } from 'express';
+ï»¿import { Router } from 'express';
 import mongoose from 'mongoose';
 import { ResourceHubModel } from '../models/ResourceHub';
 import { SOCKET_EVENTS } from '../shared-constants';
@@ -10,7 +10,6 @@ import logger from '../logger';
 
 export const resourcesRouter = Router();
 
-// GET /api/resources — optionally filter by proximity: ?lng=&lat=&maxDistance=5000
 resourcesRouter.get('/', validateQuery(resourceQuerySchema), async (req, res) => {
   try {
     if (mongoose.connection.readyState === 1) {
@@ -62,7 +61,6 @@ resourcesRouter.post('/', requireAuth, requireRole('admin', 'coordinator'), vali
   }
 });
 
-// PATCH /api/resources/:hubId/items/:itemId — update stock
 resourcesRouter.patch('/:hubId/items/:itemId', requireAuth, validate(updateStockSchema), async (req, res) => {
   try {
     let hub: any;
@@ -89,5 +87,22 @@ resourcesRouter.patch('/:hubId/items/:itemId', requireAuth, validate(updateStock
   } catch (err) {
     logger.error({ err }, 'Stock update failed');
     res.status(400).json({ error: 'Update failed' });
+  }
+});
+
+resourcesRouter.delete('/:id', requireAuth, requireRole('admin', 'coordinator'), async (req, res) => {
+  try {
+    if (mongoose.connection.readyState === 1) {
+      const hub = await ResourceHubModel.findByIdAndDelete(req.params.id);
+      if (!hub) return res.status(404).json({ error: 'Hub not found' });
+      return res.json({ success: true, message: 'Hub decommissioned' });
+    }
+    const idx = inMemoryHubs.findIndex(h => h._id === req.params.id);
+    if (idx === -1) return res.status(404).json({ error: 'Hub not found' });
+    inMemoryHubs.splice(idx, 1);
+    return res.json({ success: true, message: 'Hub decommissioned' });
+  } catch (err) {
+    logger.error({ err }, 'Hub deletion failed');
+    res.status(500).json({ error: 'Deletion failed' });
   }
 });
