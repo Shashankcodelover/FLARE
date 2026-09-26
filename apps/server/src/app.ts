@@ -9,6 +9,8 @@ import { geofenceRouter } from './routes/geofence';
 import { aiRouter } from './routes/ai';
 import { commsRouter } from './routes/comms';
 import { iotRouter } from './routes/iot';
+import { authRouter } from './routes/auth';
+import { adminRouter } from './routes/admin';
 import { issueToken } from './middleware/auth';
 import { sanitize } from './middleware/sanitize';
 import { auditLog } from './middleware/audit';
@@ -143,6 +145,12 @@ const authLimiter = (req: express.Request, res: express.Response, next: express.
 };
 app.post('/api/v1/auth/token', authLimiter, issueToken);
 app.post('/api/auth/token', authLimiter, issueToken); // legacy
+
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/admin', adminRouter);
+
+app.use('/api/auth', authRouter); // legacy fallback
+app.use('/api/admin', adminRouter); // legacy fallback
 
 // --- API Versioning (with per-resource audit logging) ---
 app.use('/api/v1/zones', auditLog('DangerZone'), zonesRouter);

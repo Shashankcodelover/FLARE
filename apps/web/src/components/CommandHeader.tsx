@@ -4,6 +4,8 @@ import { useAppTheme } from '../hooks/ThemeContext';
 import { LANG_LIST, Language, TextSize } from '../hooks/useTheme';
 import { Button, Badge } from '@mirage/ui';
 
+import type { User } from '@mirage/shared-types';
+
 interface Props {
   connected: boolean;
   peerCount: number;
@@ -12,11 +14,13 @@ interface Props {
   onShowSitrep: () => void;
   activeDeck?: 'gateway' | 'hq' | 'responder' | 'logistics';
   onSelectDeck?: (deck: 'gateway' | 'hq' | 'responder' | 'logistics') => void;
+  user?: User | null;
+  onLogout?: () => void;
 }
 
 const FIFTY_LANGUAGES = [
   ...LANG_LIST,
-  { code: 'pt', name: 'Português' },
+  { code: 'pt', name: 'PortuguÃƒÂªs' },
   { code: 'it', name: 'Italiano' },
   { code: 'nl', name: 'Nederlands' },
   { code: 'pl', name: 'Polski' },
@@ -24,29 +28,29 @@ const FIFTY_LANGUAGES = [
   { code: 'no', name: 'Norsk' },
   { code: 'da', name: 'Dansk' },
   { code: 'fi', name: 'Suomi' },
-  { code: 'tr', name: 'Türkçe' },
-  { code: 'ko', name: '한국어' },
-  { code: 'vi', name: 'Tiếng Việt' },
-  { code: 'th', name: 'ไทย' },
-  { code: 'uk', name: 'Українська' },
-  { code: 'el', name: 'Ελληνικά' },
-  { code: 'cs', name: 'Čeština' },
+  { code: 'tr', name: 'TÃƒÂ¼rkÃƒÂ§e' },
+  { code: 'ko', name: 'Ã­â€¢Å“ÃªÂµÂ­Ã¬â€“Â´' },
+  { code: 'vi', name: 'TiÃ¡ÂºÂ¿ng ViÃ¡Â»â€¡t' },
+  { code: 'th', name: 'Ã Â¹â€žÃ Â¸â€”Ã Â¸Â¢' },
+  { code: 'uk', name: 'ÃÂ£ÃÂºÃ‘â‚¬ÃÂ°Ã‘â€”ÃÂ½Ã‘ÂÃ‘Å’ÃÂºÃÂ°' },
+  { code: 'el', name: 'ÃŽâ€¢ÃŽÂ»ÃŽÂ»ÃŽÂ·ÃŽÂ½ÃŽÂ¹ÃŽÂºÃŽÂ¬' },
+  { code: 'cs', name: 'Ã„Å’eÃ…Â¡tina' },
   { code: 'hu', name: 'Magyar' },
-  { code: 'ro', name: 'Română' },
-  { code: 'bg', name: 'Български' },
-  { code: 'he', name: 'עברית' },
+  { code: 'ro', name: 'RomÃƒÂ¢nÃ„Æ’' },
+  { code: 'bg', name: 'Ãâ€˜Ã‘Å ÃÂ»ÃÂ³ÃÂ°Ã‘â‚¬Ã‘ÂÃÂºÃÂ¸' },
+  { code: 'he', name: 'Ã—Â¢Ã—â€˜Ã—Â¨Ã—â„¢Ã—Âª' },
   { code: 'id', name: 'Bahasa Indonesia' },
   { code: 'ms', name: 'Bahasa Melayu' },
-  { code: 'fa', name: 'فارسی' },
-  { code: 'ur', name: 'اردو' },
-  { code: 'bn', name: 'বাংলা' },
-  { code: 'pa', name: 'ਪੰਜਾਬੀ' },
-  { code: 'gu', name: 'ગુજરાતી' },
-  { code: 'ta', name: 'தமிழ்' },
-  { code: 'te', name: 'తెలుగు' },
-  { code: 'kn', name: 'ಕನ್ನಡ' },
-  { code: 'ml', name: 'മലയാളം' },
-  { code: 'mr', name: 'मराठी' },
+  { code: 'fa', name: 'Ã™ÂÃ˜Â§Ã˜Â±Ã˜Â³Ã›Å’' },
+  { code: 'ur', name: 'Ã˜Â§Ã˜Â±Ã˜Â¯Ã™Ë†' },
+  { code: 'bn', name: 'Ã Â¦Â¬Ã Â¦Â¾Ã Â¦â€šÃ Â¦Â²Ã Â¦Â¾' },
+  { code: 'pa', name: 'Ã Â¨ÂªÃ Â©Â°Ã Â¨Å“Ã Â¨Â¾Ã Â¨Â¬Ã Â©â‚¬' },
+  { code: 'gu', name: 'Ã Âªâ€”Ã Â«ÂÃ ÂªÅ“Ã ÂªÂ°Ã ÂªÂ¾Ã ÂªÂ¤Ã Â«â‚¬' },
+  { code: 'ta', name: 'Ã Â®Â¤Ã Â®Â®Ã Â®Â¿Ã Â®Â´Ã Â¯Â' },
+  { code: 'te', name: 'Ã Â°Â¤Ã Â±â€ Ã Â°Â²Ã Â±ÂÃ Â°â€”Ã Â±Â' },
+  { code: 'kn', name: 'Ã Â²â€¢Ã Â²Â¨Ã Â³ÂÃ Â²Â¨Ã Â²Â¡' },
+  { code: 'ml', name: 'Ã Â´Â®Ã Â´Â²Ã Â´Â¯Ã Â´Â¾Ã Â´Â³Ã Â´â€š' },
+  { code: 'mr', name: 'Ã Â¤Â®Ã Â¤Â°Ã Â¤Â¾Ã Â¤Â Ã Â¥â‚¬' },
   { code: 'sw', name: 'Kiswahili' },
   { code: 'tl', name: 'Tagalog' },
 ];
@@ -59,6 +63,8 @@ export function CommandHeader({
   onShowSitrep,
   activeDeck = 'hq',
   onSelectDeck,
+  user,
+  onLogout,
 }: Props) {
   const {
     styles,
@@ -83,10 +89,10 @@ export function CommandHeader({
   };
 
   const decks = [
-    { id: 'gateway', label: 'Gateway', icon: '⚡' },
-    { id: 'hq', label: 'HQ Command', icon: '🛡️' },
-    { id: 'responder', label: 'Responder', icon: '🛰️' },
-    { id: 'logistics', label: 'Logistics', icon: '📦' },
+    { id: 'gateway', label: 'Gateway', icon: 'Ã¢Å¡Â¡' },
+    { id: 'hq', label: 'HQ Command', icon: 'Ã°Å¸â€ºÂ¡Ã¯Â¸Â' },
+    { id: 'responder', label: 'Responder', icon: 'Ã°Å¸â€ºÂ°Ã¯Â¸Â' },
+    { id: 'logistics', label: 'Logistics', icon: 'Ã°Å¸â€œÂ¦' },
   ] as const;
 
   return (
@@ -242,7 +248,7 @@ export function CommandHeader({
           }}
           className="text-xs font-bold"
         >
-          📋 SITREP
+          Ã°Å¸â€œâ€¹ SITREP
         </Button>
 
         {/* Theme Mode Cycle Button */}
@@ -253,8 +259,37 @@ export function CommandHeader({
           className="text-xs font-bold"
           title="Cycle Theme (Light / Dark / OLED)"
         >
-          {themeMode === 'light' ? '☀️' : themeMode === 'dark' ? '🌙' : '⚡'}
+          {themeMode === 'light' ? 'Ã¢Ëœâ‚¬Ã¯Â¸Â' : themeMode === 'dark' ? 'Ã°Å¸Å’â„¢' : 'Ã¢Å¡Â¡'}
         </Button>
+        {user && (
+          <div className="flex items-center gap-2 ml-4">
+            <button 
+              className="text-xs text-slate-300 font-mono hidden sm:inline-block hover:text-white underline cursor-pointer"
+              title="Manage Profile"
+              onClick={() => window.dispatchEvent(new CustomEvent('mirage:open-profile'))}
+            >
+              {user.profile?.name || user.email}
+            </button>
+            {user.role === 'admin' && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => window.dispatchEvent(new CustomEvent('mirage:open-admin'))}
+                className="text-xs font-bold text-sky-400 ml-1 px-2"
+              >
+                Admin
+              </Button>
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onLogout}
+              className="text-xs font-bold text-red-400 hover:text-red-300 ml-1 px-2"
+            >
+              Logout
+            </Button>
+          </div>
+        )}
       </div>
     </header>
   );
@@ -312,3 +347,6 @@ function ConnDot({
     </div>
   );
 }
+
+
+

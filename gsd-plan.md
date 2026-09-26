@@ -116,3 +116,23 @@ Transform the FLARE frontend from a monolithic, inline-styled single dashboard i
 | **Phase 3** | Core Specialized Workspaces Refactor | 🟢 Completed |
 | **Phase 4** | Animations, Micro-Interactions & Resiliency | 🟢 Completed |
 | **Phase 5** | Codebase Cleanup, Quality Gate & Verification | 🟢 Completed |
+
+---
+
+### Phase 6: Authentication, Authorization & Demo Mode
+- [x] **6.1 Core Auth Engine**
+  - Added bcryptjs for secure password hashing.
+  - Implemented User mongoose model in backend with profile, ole, email, and passwordHash.
+  - Created Login, Register, and Demo endpoints in pps/server/src/routes/auth.ts.
+- [x] **6.2 Authentication Guard & UI**
+  - Created AuthPage.tsx interface matching Prism Glass UI.
+  - Added seamless Text Demo Mode button to bypass credentials.
+  - Intercepted unauthenticated users at App.tsx root.
+- [x] **6.3 Profile Maintenance & Header Integration**
+  - Integrated username and Logout capabilities directly into CommandHeader.
+  - Built ProfileModal.tsx for updating operator bio and phone details.
+- [x] **6.4 Global Admin Controls**
+  - Constructed AdminPanel.tsx modal for user management.
+  - Added DELETE /api/v1/admin/users/:id purge functionality for sysadmins.
+  - Implemented equireRole('admin') backend route middleware.
+

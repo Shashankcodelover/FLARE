@@ -1,13 +1,41 @@
-# GSD State & Execution Log
+# Auth and Profile Implementation Plan
 
-## Current Sprint: Flare Master Overhaul
-- **System**: FLARE (Decentralized Disaster Response Resource Geofencing System)
-- **Status**: COMPLETED (All Phases Verified)
-- **Objective**: Full A-to-Z overhaul of UI/UX, Component Architecture, Modular Role Decks, P2P CRDT sync, SOS/Emergency resiliency, and deployment readiness.
+## START
+- Analyze existing dependencies (zod, jsonwebtoken, bcrypt?, express)
+- Add missing dependencies (e.g. bcrypt for password hashing in server, maybe react-router-dom if not present in web)
 
-## Tasks Progress
-- [x] Phase 1: Design System & Theming (Prism Glass, Tailwind, packages/ui)
-- [x] Phase 2: Dynamic Role Gateway & Layout Decomposition
-- [x] Phase 3: Core Role Decks Refactor (HQ Command, Field Responder, Logistics Sync)
-- [x] Phase 4: Tactical Resiliency (Slide-to-SOS, Voice Commands, 5s Undo Buffer, Haptics)
-- [x] Phase 5: Verification, Production Build, Git Commit & Push
+## PLAN
+- Define User schema in database (Mongoose) with fields: email, passwordHash, role, profile (name, phone, etc)
+- Server Routes:
+  - POST /api/auth/register
+  - POST /api/auth/login
+  - GET /api/auth/me (Profile retrieval)
+  - PUT /api/auth/profile (Profile update)
+  - GET /api/admin/users (Admin capabilities)
+- Demo Mode:
+  - POST /api/auth/demo (auto-login or token without credentials)
+- Web UI:
+  - Setup routing or state to show Auth pages before RoleGateway.
+  - Login Component
+  - Register Component
+  - Profile Modal/Page
+  - Admin Dashboard (for user management)
+  - "Text Demo Mode" button on login screen.
+
+## BUILD
+- [ ] Install bcrypt on server
+- [ ] Create `User` mongoose model.
+- [ ] Create `auth.routes.ts` and `admin.routes.ts` in server.
+- [ ] Update `apps/server/src/app.ts` to include new routes.
+- [ ] Update `apps/web/src/App.tsx` with Auth state management.
+- [ ] Create `AuthPage.tsx` with Login/Register forms.
+- [ ] Implement Demo Mode button that calls Demo login and sets token.
+- [ ] Build Profile maintenance component in Web.
+- [ ] Build Admin capabilities (user list, change roles) in Web.
+
+## VERIFY
+- [ ] Run backend tests for auth routes.
+- [ ] Test E2E login/register flow.
+- [ ] Test Profile update.
+- [ ] Test Demo mode.
+- [ ] Test Admin capabilities.

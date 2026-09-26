@@ -6,13 +6,16 @@ import { RoleGateway } from './components/gateway/RoleGateway';
 import { HQCommandDeck } from './components/hq/HQCommandDeck';
 import { FieldResponderDeck } from './components/responder/FieldResponderDeck';
 import { LogisticsDeck } from './components/logistics/LogisticsDeck';
+import { AuthPage } from './components/auth/AuthPage';
+import { ProfileModal } from './components/auth/ProfileModal';
+import { AdminPanel } from './components/auth/AdminPanel';
 import { Modal, Button } from '@mirage/ui';
 import { useSocket } from './hooks/useSocket';
 import { useP2PSync } from '@mirage/crdt-logic';
 import { useVolunteerSim } from './hooks/useVolunteerSim';
 import { useAppTheme } from './hooks/ThemeContext';
 import { API_URL } from './config';
-import type { GeofenceAlert } from '@mirage/shared-types';
+import type { GeofenceAlert, User } from '@mirage/shared-types';
 
 export type DeckView = 'gateway' | 'hq' | 'responder' | 'logistics';
 
@@ -20,6 +23,13 @@ export default function App() {
   const { socket, connected } = useSocket();
   const { peerCount, syncStatus } = useP2PSync(socket);
   const { themeMode, lang, triggerHaptic, toggleTheme } = useAppTheme();
+
+  // Auth states
+  const [user, setUser] = useState<User | null>(() => {
+    const saved = localStorage.getItem('mirage_user');
+    return saved ? JSON.parse(saved) : null;
+  });
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem('mirage_token'));
 
   // Active Deck navigation
   const [activeDeck, setActiveDeck] = useState<DeckView>(() => {
@@ -32,6 +42,21 @@ export default function App() {
   // FEMA SITREP states
   const [showSitrep, setShowSitrep] = useState(false);
   const [sitrepText, setSitrepText] = useState('');
+
+  // Modals state
+  const [showProfile, setShowProfile] = useState(false);
+  const [showAdmin, setShowAdmin] = useState(false);
+
+  useEffect(() => {
+    const handleProfile = () => setShowProfile(true);
+    const handleAdmin = () => setShowAdmin(true);
+    window.addEventListener('mirage:open-profile', handleProfile);
+    window.addEventListener('mirage:open-admin', handleAdmin);
+    return () => {
+      window.removeEventListener('mirage:open-profile', handleProfile);
+      window.removeEventListener('mirage:open-admin', handleAdmin);
+    };
+  }, []);
 
   // 5-second Undo buffer states
   const [pendingAction, setPendingAction] = useState<{
@@ -260,6 +285,19 @@ export default function App() {
 
   const isRtl = lang === 'ar';
 
+  if (!user || !token) {
+    return (
+      <AuthPage 
+        onLogin={(u, t) => {
+          setUser(u);
+          setToken(t);
+          localStorage.setItem('mirage_user', JSON.stringify(u));
+          localStorage.setItem('mirage_token', t);
+        }} 
+      />
+    );
+  }
+
   return (
     <div
       dir={isRtl ? 'rtl' : 'ltr'}
@@ -284,10 +322,25 @@ export default function App() {
             onShowSitrep={() => setShowSitrep(true)}
             activeDeck={activeDeck}
             onSelectDeck={handleSelectDeck}
+            user={user}
+            onLogout={() => {
+              setUser(null);
+              setToken(null);
+              localStorage.removeItem('mirage_user');
+              localStorage.removeItem('mirage_token');
+              setActiveDeck('gateway');
+            }}
           />
 
           {/* Incident Telemetry Stats Bar */}
           <StatsBar />
+
+          {/* ACTIVE DISASTER SCENARIO BANNER FOR INTERVIEWER */}
+          <div className="bg-red-600 text-white px-4 py-2 text-center text-sm font-bold uppercase tracking-widest border-y border-red-800 flex justify-center items-center gap-3 shadow-lg z-50">
+            <span className="animate-pulse">⚠️</span>
+            <span>ACTIVE DISASTER SIMULATION: 7.2 MAGNITUDE EARTHQUAKE (SAN FRANCISCO BAY AREA). ALL OFFLINE MESH COMMS ACTIVE.</span>
+            <span className="animate-pulse">⚠️</span>
+          </div>
 
           {/* Operational View Deck with Animated Transitions */}
           <div className="flex-1 flex overflow-hidden relative">
@@ -488,6 +541,23 @@ export default function App() {
               {sitrepText}
             </div>
           </Modal>
+
+          <ProfileModal 
+            isOpen={showProfile} 
+            onClose={() => setShowProfile(false)} 
+            user={user} 
+            token={token}
+            onUserUpdate={(u) => {
+              setUser(u);
+              localStorage.setItem('mirage_user', JSON.stringify(u));
+            }}
+          />
+
+          <AdminPanel 
+            isOpen={showAdmin} 
+            onClose={() => setShowAdmin(false)} 
+            token={token} 
+          />
         </>
       )}
     </div>

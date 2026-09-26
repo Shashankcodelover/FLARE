@@ -78,3 +78,25 @@ export interface SignalPayload {
   to: string;
   data: RTCSessionDescriptionInit | RTCIceCandidateInit;
 }
+
+// User Auth & Profile
+export interface UserProfile {
+  name: string;
+  phone?: string;
+  bio?: string;
+}
+
+export interface User {
+  _id: string;
+  email: string;
+  role: 'admin' | 'hq' | 'responder' | 'logistics' | 'demo';
+  profile: UserProfile;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AuthResponse {
+  user: User;
+  token: string;
+}
+
