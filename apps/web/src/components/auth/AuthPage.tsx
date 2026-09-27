@@ -94,7 +94,7 @@ export function AuthPage({ onLogin }: AuthPageProps) {
               <input
                 type="text"
                 required
-                className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:outline-none focus:border-sky-500 text-sm"
+                className="w-full px-4 py-2 bg-slate-50 border border-slate-700 rounded-lg focus:outline-none focus:border-sky-500 text-sm"
                 value={name}
                 onChange={e => setName(e.target.value)}
               />
@@ -106,7 +106,7 @@ export function AuthPage({ onLogin }: AuthPageProps) {
             <input
               type="email"
               required
-              className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:outline-none focus:border-sky-500 text-sm"
+              className="w-full px-4 py-2 bg-slate-50 border border-slate-700 rounded-lg focus:outline-none focus:border-sky-500 text-sm"
               value={email}
               onChange={e => setEmail(e.target.value)}
             />
@@ -117,7 +117,7 @@ export function AuthPage({ onLogin }: AuthPageProps) {
             <input
               type="password"
               required
-              className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:outline-none focus:border-sky-500 text-sm"
+              className="w-full px-4 py-2 bg-slate-50 border border-slate-700 rounded-lg focus:outline-none focus:border-sky-500 text-sm"
               value={password}
               onChange={e => setPassword(e.target.value)}
             />
@@ -127,7 +127,7 @@ export function AuthPage({ onLogin }: AuthPageProps) {
             <div>
               <label className="block text-xs text-slate-400 mb-1">Role</label>
               <select
-                className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:outline-none focus:border-sky-500 text-sm"
+                className="w-full px-4 py-2 bg-slate-50 border border-slate-700 rounded-lg focus:outline-none focus:border-sky-500 text-sm"
                 value={role}
                 onChange={e => setRole(e.target.value as any)}
               >
@@ -151,7 +151,7 @@ export function AuthPage({ onLogin }: AuthPageProps) {
         <div className="mt-6 text-center">
           <button 
             type="button" 
-            className="text-xs text-slate-400 hover:text-white underline"
+            className="text-xs text-slate-400 hover:text-slate-900 underline"
             onClick={() => setIsLogin(!isLogin)}
           >
             {isLogin ? 'Need clearance? Register here.' : 'Already have clearance? Login.'}
@@ -167,7 +167,7 @@ export function AuthPage({ onLogin }: AuthPageProps) {
         <Button 
           type="button" 
           variant="ghost" 
-          className="w-full text-slate-300 hover:text-white"
+          className="w-full text-slate-300 hover:text-slate-900"
           onClick={handleDemoMode}
           disabled={loading}
         >

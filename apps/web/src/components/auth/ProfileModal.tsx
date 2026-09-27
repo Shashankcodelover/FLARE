@@ -57,7 +57,7 @@ export function ProfileModal({ isOpen, onClose, user, token, onUserUpdate }: Pro
             <input
               type="text"
               required
-              className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm"
+              className="w-full px-4 py-2 bg-slate-50 border border-slate-700 rounded-lg text-sm"
               value={name}
               onChange={e => setName(e.target.value)}
             />
@@ -66,7 +66,7 @@ export function ProfileModal({ isOpen, onClose, user, token, onUserUpdate }: Pro
             <label className="block text-xs text-slate-400 mb-1">Phone Number</label>
             <input
               type="tel"
-              className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm"
+              className="w-full px-4 py-2 bg-slate-50 border border-slate-700 rounded-lg text-sm"
               value={phone}
               onChange={e => setPhone(e.target.value)}
             />
@@ -74,7 +74,7 @@ export function ProfileModal({ isOpen, onClose, user, token, onUserUpdate }: Pro
           <div>
             <label className="block text-xs text-slate-400 mb-1">Bio / Skills</label>
             <textarea
-              className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm"
+              className="w-full px-4 py-2 bg-slate-50 border border-slate-700 rounded-lg text-sm"
               rows={3}
               value={bio}
               onChange={e => setBio(e.target.value)}

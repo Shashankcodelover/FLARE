@@ -77,7 +77,7 @@ export function RoleGateway({
       {/* Top Bar with Brand & Mode Switcher */}
       <header className="w-full max-w-7xl mx-auto flex items-center justify-between py-2">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-orange-600 via-emerald-600 to-sky-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-orange-500/20">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-orange-600 via-emerald-600 to-sky-500 flex items-center justify-center text-slate-900 font-black text-xl shadow-lg shadow-orange-500/20">
             FL
           </div>
           <div>
@@ -89,7 +89,7 @@ export function RoleGateway({
                 v2.0 TACTICAL
               </Badge>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+            <p className="text-xs text-slate-500  font-medium">
               Decentralized Disaster Response & Geofencing System
             </p>
           </div>
@@ -115,7 +115,7 @@ export function RoleGateway({
           transition={{ duration: 0.5 }}
           className="text-center max-w-3xl mb-10 sm:mb-14"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-panel text-xs font-semibold mb-4 text-slate-600 dark:text-slate-300">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-panel text-xs font-semibold mb-4 text-slate-600 ">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             MISSION DISPATCH GATEWAY — SELECT OPERATIONAL INTERFACE
           </div>
@@ -123,7 +123,7 @@ export function RoleGateway({
             Resilient Field Coordination <br />
             <span className="gradient-text">Under Complete Network Blackout</span>
           </h2>
-          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base text-slate-600  max-w-2xl mx-auto leading-relaxed">
             Peer-to-peer WebRTC CRDT synchronization eliminates single points of failure.
             Choose your specialized role deck to initialize geospatial geofences, monitor mesh nodes,
             or allocate disaster relief supplies.
@@ -147,7 +147,7 @@ export function RoleGateway({
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-3xl p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 shadow-inner">
+                    <span className="text-3xl p-2.5 rounded-xl bg-slate-100 /80 shadow-inner">
                       {role.icon}
                     </span>
                     <Badge variant={role.variant}>
@@ -155,22 +155,22 @@ export function RoleGateway({
                     </Badge>
                   </div>
 
-                  <h3 className="text-xl sm:text-2xl font-bold font-tactical text-slate-900 dark:text-white mb-2">
+                  <h3 className="text-xl sm:text-2xl font-bold font-tactical text-slate-900  mb-2">
                     {role.title}
                   </h3>
 
-                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
+                  <p className="text-xs sm:text-sm text-slate-600  leading-relaxed mb-6">
                     {role.description}
                   </p>
 
                   <div className="space-y-2 mb-6 pt-4 border-t border-slate-200/60 dark:border-slate-800/60">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 ">
                       Deck Capabilities
                     </div>
                     {role.features.map((feature) => (
                       <div
                         key={feature}
-                        className="flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-300"
+                        className="flex items-center gap-2 text-xs font-medium text-slate-700 "
                       >
                         <span className="text-emerald-500 font-bold">✓</span>
                         {feature}
@@ -194,19 +194,19 @@ export function RoleGateway({
       </main>
 
       {/* Bottom Live System Telemetry Bar */}
-      <footer className="w-full max-w-7xl mx-auto pt-6 border-t border-slate-200/60 dark:border-slate-800/60 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+      <footer className="w-full max-w-7xl mx-auto pt-6 border-t border-slate-200/60 dark:border-slate-800/60 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500 ">
         <div className="flex items-center gap-6">
           <StatusDot
             status={connected ? 'online' : 'offline'}
             label={connected ? 'Central Uplink Active' : 'Offline / Standalone Mesh'}
           />
-          <span className="hidden sm:inline text-slate-300 dark:text-slate-700">|</span>
+          <span className="hidden sm:inline text-slate-300 ">|</span>
           <span className="font-mono">
-            🛰️ P2P Radio Peers: <strong className="text-slate-800 dark:text-slate-200">{peerCount} Connected</strong>
+            🛰️ P2P Radio Peers: <strong className="text-slate-800 ">{peerCount} Connected</strong>
           </span>
-          <span className="hidden sm:inline text-slate-300 dark:text-slate-700">|</span>
+          <span className="hidden sm:inline text-slate-300 ">|</span>
           <span className="font-mono">
-            ⚠️ Active Danger Zones: <strong className="text-slate-800 dark:text-slate-200">{activeZonesCount}</strong>
+            ⚠️ Active Danger Zones: <strong className="text-slate-800 ">{activeZonesCount}</strong>
           </span>
         </div>
 

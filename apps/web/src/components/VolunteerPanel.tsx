@@ -50,7 +50,7 @@ export function VolunteerPanel({
           return (
             <div 
               key={need.zoneId} 
-              className={`mb-2 rounded-md px-2.5 py-1.5 border ${isContrast ? 'bg-black border-green-500' : ''}`}
+              className={`mb-2 rounded-md px-2.5 py-1.5 border ${isContrast ? 'bg-white border-green-500' : ''}`}
               style={!isContrast ? { backgroundColor: style.bg, borderColor: style.color + '33' } : undefined}
             >
               <div className="flex justify-between items-center mb-1">
@@ -58,7 +58,7 @@ export function VolunteerPanel({
                   {need.zoneName}
                 </span>
                 <span 
-                  className={`text-[9px] font-bold px-1.5 py-[1px] rounded-sm border ${isContrast ? 'text-green-500 bg-black border-green-500' : ''}`}
+                  className={`text-[9px] font-bold px-1.5 py-[1px] rounded-sm border ${isContrast ? 'text-green-500 bg-white border-green-500' : ''}`}
                   style={!isContrast ? { color: style.color, backgroundColor: style.bg, borderColor: style.color + '55' } : undefined}
                 >
                   {style.icon} {t(style.labelKey)}
@@ -104,8 +104,8 @@ export function VolunteerPanel({
               }}
               className={`mb-1.5 rounded-lg cursor-pointer overflow-hidden transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 border ${
                 isSelected 
-                  ? (isContrast ? 'bg-black border-green-500' : 'bg-[var(--glass-bg-hover)] border-[var(--blue)] shadow-md') 
-                  : (isContrast ? 'bg-black border-[var(--glass-border)]' : 'bg-[var(--glass-bg)] border-[var(--glass-border)]')
+                  ? (isContrast ? 'bg-white border-green-500' : 'bg-[var(--glass-bg-hover)] border-[var(--blue)] shadow-md') 
+                  : (isContrast ? 'bg-white border-[var(--glass-border)]' : 'bg-[var(--glass-bg)] border-[var(--glass-border)]')
               }`}
             >
               {/* Volunteer row */}
@@ -124,7 +124,7 @@ export function VolunteerPanel({
                       {v.name}
                     </span>
                     <span 
-                      className={`text-[9px] font-bold px-1.5 py-[1px] rounded-sm border ml-2 shrink-0 ${isContrast ? 'bg-black text-green-500 border-green-500' : ''}`}
+                      className={`text-[9px] font-bold px-1.5 py-[1px] rounded-sm border ml-2 shrink-0 ${isContrast ? 'bg-white text-green-500 border-green-500' : ''}`}
                       style={!isContrast ? { backgroundColor: st.bg, color: st.color, borderColor: st.color + '44' } : undefined}
                     >
                       {t(st.labelKey)}
@@ -193,8 +193,8 @@ export function VolunteerPanel({
                             disabled={v.assignedZoneId === z.zoneId}
                             className={`px-2.5 py-1.5 rounded text-[10px] font-semibold text-left border outline-none transition-colors focus-visible:ring-2 focus-visible:ring-sky-500 ${
                               v.assignedZoneId === z.zoneId
-                                ? (isContrast ? 'bg-black text-[#555] border-[#555] cursor-default' : 'bg-[var(--glass-bg)] text-[var(--text-footnote)] border-[var(--glass-border)] cursor-default')
-                                : (isContrast ? 'bg-black text-green-500 border-green-500 hover:bg-green-500/10 cursor-pointer' : 'bg-[var(--glass-bg-hover)] text-[var(--text-primary)] border-[var(--blue)] cursor-pointer hover:bg-white/10')
+                                ? (isContrast ? 'bg-white text-[#555] border-[#555] cursor-default' : 'bg-[var(--glass-bg)] text-[var(--text-footnote)] border-[var(--glass-border)] cursor-default')
+                                : (isContrast ? 'bg-white text-green-500 border-green-500 hover:bg-green-500/10 cursor-pointer' : 'bg-[var(--glass-bg-hover)] text-[var(--text-primary)] border-[var(--blue)] cursor-pointer hover:bg-white/10')
                             }`}
                           >
                             {v.assignedZoneId === z.zoneId ? `✓ ${t('assigned')}` : `→ ${t('sendTo')}`} {z.zoneName}
@@ -208,7 +208,7 @@ export function VolunteerPanel({
                               triggerHaptic('warning');
                             }}
                             className={`px-2.5 py-1.5 rounded text-[10px] font-semibold text-left border outline-none cursor-pointer mt-1 transition-colors focus-visible:ring-2 focus-visible:ring-red-500 ${
-                              isContrast ? 'bg-black text-[#ff3333] border-[#ff3333] hover:bg-[#ff3333]/10' : 'bg-[rgba(225,29,72,0.1)] text-[var(--rose)] border-[var(--rose)] hover:bg-[rgba(225,29,72,0.2)]'
+                              isContrast ? 'bg-white text-[#ff3333] border-[#ff3333] hover:bg-[#ff3333]/10' : 'bg-[rgba(225,29,72,0.1)] text-[var(--rose)] border-[var(--rose)] hover:bg-[rgba(225,29,72,0.2)]'
                             }`}
                           >
                             ↩ {t('recallToBase')}
@@ -227,7 +227,7 @@ export function VolunteerPanel({
       {/* Dispatch log */}
       {dispatchMessages.length > 0 && (
         <div className={`p-2.5 shrink-0 max-h-[120px] overflow-y-auto border-t z-20 shadow-[0_-4px_10px_rgba(0,0,0,0.2)] ${
-          isContrast ? 'bg-black border-green-500' : 'bg-[var(--glass-bg)] backdrop-blur-[var(--glass-blur)] border-[var(--glass-border)]'
+          isContrast ? 'bg-white border-green-500' : 'bg-[var(--glass-bg)] backdrop-blur-[var(--glass-blur)] border-[var(--glass-border)]'
         }`}>
           <div className={`text-[9px] uppercase tracking-wider mb-1.5 ${isContrast ? 'text-green-500' : 'text-[var(--text-footnote)]'}`}>
             {t('dispatchLog')}

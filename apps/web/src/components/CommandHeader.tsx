@@ -109,12 +109,12 @@ export function CommandHeader({
           onClick={() => onSelectDeck?.('gateway')}
           className="flex items-center gap-2.5 text-left group cursor-pointer outline-none"
         >
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-orange-600 to-emerald-500 flex items-center justify-center text-white font-black text-sm shadow-md group-hover:scale-105 transition-transform">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-orange-600 to-emerald-500 flex items-center justify-center text-slate-900 font-black text-sm shadow-md group-hover:scale-105 transition-transform">
             FL
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-tactical font-black text-sm sm:text-base tracking-wider text-slate-900 dark:text-white">
+              <span className="font-tactical font-black text-sm sm:text-base tracking-wider text-slate-900 ">
                 FLARE
               </span>
               <AnimatePresence>
@@ -123,7 +123,7 @@ export function CommandHeader({
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
-                    className="w-4 h-4 rounded-full bg-red-600 text-white font-bold text-[9px] flex items-center justify-center animate-pulse"
+                    className="w-4 h-4 rounded-full bg-red-600 text-slate-900 font-bold text-[9px] flex items-center justify-center animate-pulse"
                   >
                     {alertCount}
                   </motion.span>
@@ -138,7 +138,7 @@ export function CommandHeader({
 
         {/* Deck Nav Tabs */}
         {onSelectDeck && (
-          <nav className="hidden md:flex items-center gap-1 p-1 bg-slate-200/50 dark:bg-slate-800/50 rounded-xl">
+          <nav className="hidden md:flex items-center gap-1 p-1 bg-slate-200/50 /50 rounded-xl">
             {decks.map((deck) => {
               const isActive = activeDeck === deck.id;
               return (
@@ -150,8 +150,8 @@ export function CommandHeader({
                   }}
                   className={`flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+                      ? 'bg-white  text-slate-900  shadow-sm'
+                      : 'text-slate-600  hover:text-slate-900 dark:hover:text-slate-200'
                   }`}
                 >
                   <span>{deck.icon}</span>
@@ -167,7 +167,7 @@ export function CommandHeader({
       <div className="hidden xl:flex items-center gap-5">
         <StatusPill label={t('incident')} value={t('active')} color="#ea580c" pulse />
         <StatusPill label={t('threatLevel')} value={t('high')} color="#d97706" />
-        <div className="h-6 w-[1px] bg-slate-200 dark:bg-slate-800" />
+        <div className="h-6 w-[1px] bg-slate-200 " />
         <div className="text-xs text-slate-500 font-mono" aria-label="UTC Clock">
           {timeStr}
         </div>
@@ -194,7 +194,7 @@ export function CommandHeader({
             aria-label="Operational Role"
             value={userRole}
             onChange={(e) => changeRole(e.target.value as any)}
-            className="text-xs px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white/70 dark:bg-slate-800/70 text-slate-800 dark:text-slate-200 outline-none cursor-pointer"
+            className="text-xs px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white/70 /70 text-slate-800  outline-none cursor-pointer"
           >
             <option value="viewer">Viewer</option>
             <option value="field_agent">Field Agent</option>
@@ -211,7 +211,7 @@ export function CommandHeader({
             aria-label="Language Selector"
             value={lang}
             onChange={handleLangChange}
-            className="text-xs px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white/70 dark:bg-slate-800/70 text-slate-800 dark:text-slate-200 outline-none cursor-pointer max-w-[90px]"
+            className="text-xs px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white/70 /70 text-slate-800  outline-none cursor-pointer max-w-[90px]"
           >
             {FIFTY_LANGUAGES.map((l) => (
               <option key={l.code} value={l.code}>
@@ -222,14 +222,14 @@ export function CommandHeader({
         </div>
 
         {/* Text Resizer */}
-        <div className="hidden sm:flex items-center gap-0.5 bg-slate-200/50 dark:bg-slate-800/50 p-0.5 rounded-md">
+        <div className="hidden sm:flex items-center gap-0.5 bg-slate-200/50 /50 p-0.5 rounded-md">
           {(['sm', 'md', 'lg'] as TextSize[]).map((sz) => (
             <button
               key={sz}
               onClick={() => changeTextSize(sz)}
               className={`px-1.5 py-0.5 text-[10px] font-bold uppercase rounded cursor-pointer ${
                 textSize === sz
-                  ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-sky-400 shadow-sm'
+                  ? 'bg-white  text-blue-600  shadow-sm'
                   : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
               }`}
             >
@@ -264,7 +264,7 @@ export function CommandHeader({
         {user && (
           <div className="flex items-center gap-2 ml-4">
             <button 
-              className="text-xs text-slate-300 font-mono hidden sm:inline-block hover:text-white underline cursor-pointer"
+              className="text-xs text-slate-300 font-mono hidden sm:inline-block hover:text-slate-900 underline cursor-pointer"
               title="Manage Profile"
               onClick={() => window.dispatchEvent(new CustomEvent('mirage:open-profile'))}
             >
@@ -341,7 +341,7 @@ function ConnDot({
         style={{ backgroundColor: active ? color : '#64748b' }}
         className={`w-2 h-2 rounded-full ${active ? 'animate-pulse' : 'opacity-40'}`}
       />
-      <span className="text-xs font-medium text-slate-600 dark:text-slate-400">
+      <span className="text-xs font-medium text-slate-600 ">
         {label}
       </span>
     </div>

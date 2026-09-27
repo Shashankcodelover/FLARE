@@ -336,7 +336,7 @@ export default function App() {
           <StatsBar />
 
           {/* ACTIVE DISASTER SCENARIO BANNER FOR INTERVIEWER */}
-          <div className="bg-red-600 text-white px-4 py-2 text-center text-sm font-bold uppercase tracking-widest border-y border-red-800 flex justify-center items-center gap-3 shadow-lg z-50">
+          <div className="bg-red-600 text-slate-900 px-4 py-2 text-center text-sm font-bold uppercase tracking-widest border-y border-red-800 flex justify-center items-center gap-3 shadow-lg z-50">
             <span className="animate-pulse">⚠️</span>
             <span>ACTIVE DISASTER SIMULATION: 7.2 MAGNITUDE EARTHQUAKE (SAN FRANCISCO BAY AREA). ALL OFFLINE MESH COMMS ACTIVE.</span>
             <span className="animate-pulse">⚠️</span>
@@ -419,7 +419,7 @@ export default function App() {
                     initial={{ opacity: 0, scale: 0.9, x: 10 }}
                     animate={{ opacity: 1, scale: 1, x: 0 }}
                     exit={{ opacity: 0, scale: 0.9 }}
-                    className="glass-panel px-3 py-2 bg-slate-900/90 text-white rounded-xl shadow-xl max-w-xs border border-sky-500/40"
+                    className="glass-panel px-3 py-2 bg-slate-50/90 text-slate-900 rounded-xl shadow-xl max-w-xs border border-sky-500/40"
                   >
                     <div className="text-[9px] font-bold uppercase tracking-wider text-sky-400">
                       {isListening ? 'Listening for command...' : 'Voice Assistant'}
@@ -435,8 +435,8 @@ export default function App() {
                 onClick={toggleVoiceListening}
                 className={`w-12 h-12 rounded-full flex items-center justify-center text-lg shadow-xl cursor-pointer transition-transform hover:scale-105 active:scale-95 outline-none ${
                   isListening
-                    ? 'bg-red-600 text-white animate-pulse'
-                    : 'glass-panel bg-slate-900/80 text-sky-400 hover:text-white border border-sky-500/30'
+                    ? 'bg-red-600 text-slate-900 animate-pulse'
+                    : 'glass-panel bg-slate-50/80 text-sky-400 hover:text-slate-900 border border-sky-500/30'
                 }`}
                 title="Voice Assistant"
               >
@@ -451,7 +451,7 @@ export default function App() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 30 }}
-                  className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1100] px-4 py-3 rounded-2xl bg-slate-950/95 border-2 border-red-500/80 text-white shadow-2xl flex items-center gap-4 backdrop-blur-xl min-w-[320px] justify-between"
+                  className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1100] px-4 py-3 rounded-2xl bg-slate-950/95 border-2 border-red-500/80 text-slate-900 shadow-2xl flex items-center gap-4 backdrop-blur-xl min-w-[320px] justify-between"
                 >
                   <div className="flex flex-col">
                     <span className="text-xs font-bold text-slate-100">
@@ -481,7 +481,7 @@ export default function App() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[2000] bg-black/90 backdrop-blur-xl flex flex-col items-center justify-center p-6 text-center"
+                className="fixed inset-0 z-[2000] bg-white/90 backdrop-blur-xl flex flex-col items-center justify-center p-6 text-center"
               >
                 <motion.div
                   animate={{ scale: [1, 1.15, 1] }}

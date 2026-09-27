@@ -39,7 +39,7 @@ export function LogisticsDeck({ socket, triggerHaptic }: LogisticsDeckProps) {
         <Card variant="glass" className="p-5 border border-amber-500/30">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h2 className="text-lg font-bold font-tactical text-slate-900 dark:text-white">
+              <h2 className="text-lg font-bold font-tactical text-slate-900 ">
                 Logistics Supply Deck
               </h2>
               <p className="text-xs text-slate-500">
@@ -65,7 +65,7 @@ export function LogisticsDeck({ socket, triggerHaptic }: LogisticsDeckProps) {
             <motion.div
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-xs text-emerald-600 dark:text-emerald-400 font-mono p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20"
+              className="text-xs text-emerald-600  font-mono p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20"
             >
               ✓ {mergeStatus}
             </motion.div>
@@ -73,7 +73,7 @@ export function LogisticsDeck({ socket, triggerHaptic }: LogisticsDeckProps) {
         </Card>
 
         {/* Existing ResourcePanel Component wrapped inside glass card */}
-        <div className="flex-1 min-h-[350px] glass-panel bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 p-3 rounded-2xl overflow-y-auto">
+        <div className="flex-1 min-h-[350px] glass-panel bg-white/70 /70 border border-slate-200 dark:border-slate-800 p-3 rounded-2xl overflow-y-auto">
           <ResourcePanel socket={socket} />
         </div>
       </div>
@@ -86,10 +86,10 @@ export function LogisticsDeck({ socket, triggerHaptic }: LogisticsDeckProps) {
             <div className="text-[11px] font-bold uppercase text-slate-500 mb-1">
               Redis Horizontal Adapters
             </div>
-            <div className="text-2xl font-black font-tactical text-slate-900 dark:text-white">
+            <div className="text-2xl font-black font-tactical text-slate-900 ">
               3 Nodes
             </div>
-            <div className="text-xs text-emerald-600 dark:text-emerald-400 font-mono mt-1">
+            <div className="text-xs text-emerald-600  font-mono mt-1">
               ● Cluster Health: 100%
             </div>
           </Card>
@@ -98,7 +98,7 @@ export function LogisticsDeck({ socket, triggerHaptic }: LogisticsDeckProps) {
             <div className="text-[11px] font-bold uppercase text-slate-500 mb-1">
               Message Replication Delay
             </div>
-            <div className="text-2xl font-black font-tactical text-slate-900 dark:text-white">
+            <div className="text-2xl font-black font-tactical text-slate-900 ">
               1.4 ms
             </div>
             <div className="text-xs text-slate-500 font-mono mt-1">
@@ -110,10 +110,10 @@ export function LogisticsDeck({ socket, triggerHaptic }: LogisticsDeckProps) {
             <div className="text-[11px] font-bold uppercase text-slate-500 mb-1">
               YATA CRDT Operations
             </div>
-            <div className="text-2xl font-black font-tactical text-slate-900 dark:text-white">
+            <div className="text-2xl font-black font-tactical text-slate-900 ">
               1,248 ops
             </div>
-            <div className="text-xs text-emerald-600 dark:text-emerald-400 font-mono mt-1">
+            <div className="text-xs text-emerald-600  font-mono mt-1">
               Zero Collisions Detected
             </div>
           </Card>
@@ -123,7 +123,7 @@ export function LogisticsDeck({ socket, triggerHaptic }: LogisticsDeckProps) {
         <Card variant="glass" className="p-5 border border-slate-200 dark:border-slate-800 flex-1">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-base font-bold font-tactical text-slate-900 dark:text-white">
+              <h3 className="text-base font-bold font-tactical text-slate-900 ">
                 CRDT Distributed Transaction Ledger
               </h3>
               <p className="text-xs text-slate-500">
@@ -150,11 +150,11 @@ export function LogisticsDeck({ socket, triggerHaptic }: LogisticsDeckProps) {
                 {ledger.map((row) => (
                   <tr key={row.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
                     <td className="py-3 text-slate-400">{row.id}</td>
-                    <td className="py-3 font-semibold text-slate-800 dark:text-slate-200">{row.item}</td>
-                    <td className="py-3 text-emerald-600 dark:text-emerald-400 font-bold">{row.delta}</td>
+                    <td className="py-3 font-semibold text-slate-800 ">{row.item}</td>
+                    <td className="py-3 text-emerald-600  font-bold">{row.delta}</td>
                     <td className="py-3 text-slate-500">{row.peer}</td>
                     <td className="py-3">
-                      <span className="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                      <span className="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-600  border border-amber-500/20">
                         {row.state}
                       </span>
                     </td>

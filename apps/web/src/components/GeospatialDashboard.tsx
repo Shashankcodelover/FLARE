@@ -358,7 +358,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
       {/* Top-Right Map Actions toolbar */}
       <div className="absolute top-3 right-3 z-[1000] flex gap-2">
         <label 
-          className={`px-3 py-1.5 rounded-md text-[11px] font-bold cursor-pointer flex items-center gap-1.5 select-none transition-colors hover:opacity-90 ${isContrast ? 'text-green-500' : 'text-white shadow-lg'}`}
+          className={`px-3 py-1.5 rounded-md text-[11px] font-bold cursor-pointer flex items-center gap-1.5 select-none transition-colors hover:opacity-90 ${isContrast ? 'text-green-500' : 'text-slate-900 shadow-lg'}`}
           style={{
             background: isContrast ? '#000' : 'var(--glass-bg)',
             border: `2px solid ${styles.borderColor}`,
@@ -385,7 +385,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
                   setIsDrawing(true);
                   triggerHaptic('success');
                 }}
-                className={`px-3 py-1.5 rounded-md text-[11px] font-bold cursor-pointer transition-colors hover:opacity-90 focus:ring-2 focus:ring-sky-500 focus:outline-none ${isContrast ? 'text-green-500' : 'text-white shadow-lg'}`}
+                className={`px-3 py-1.5 rounded-md text-[11px] font-bold cursor-pointer transition-colors hover:opacity-90 focus:ring-2 focus:ring-sky-500 focus:outline-none ${isContrast ? 'text-green-500' : 'text-slate-900 shadow-lg'}`}
                 style={{
                   background: isContrast ? '#000' : 'var(--glass-bg)',
                   border: `2px solid ${styles.borderColor}`,
@@ -478,7 +478,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
       {/* New Zone Form Modal */}
       <AnimatePresence>
         {showZoneModal && (
-          <div className="absolute inset-0 z-[1200] bg-black/60 flex items-center justify-center p-4">
+          <div className="absolute inset-0 z-[1200] bg-white/60 flex items-center justify-center p-4">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -504,7 +504,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
                     value={newZoneName}
                     onChange={(e) => setNewZoneName(e.target.value)}
                     placeholder="Wildfire Zone Delta"
-                    className="bg-black/20 rounded-md px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-sky-500 transition-shadow"
+                    className="bg-white/20 rounded-md px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-sky-500 transition-shadow"
                     style={{
                       color: isContrast ? '#00ff00' : '#f1f5f9',
                       border: `1px solid ${styles.borderColor}`,
@@ -519,7 +519,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
                     onChange={(e) => setNewZoneDesc(e.target.value)}
                     placeholder="Evacuation details and boundary notes"
                     rows={3}
-                    className="bg-black/20 rounded-md px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-sky-500 transition-shadow resize-none"
+                    className="bg-white/20 rounded-md px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-sky-500 transition-shadow resize-none"
                     style={{
                       color: isContrast ? '#00ff00' : '#f1f5f9',
                       border: `1px solid ${styles.borderColor}`,
@@ -532,7 +532,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
                     id="zone-sev"
                     value={newZoneSeverity}
                     onChange={(e) => setNewZoneSeverity(e.target.value as any)}
-                    className="bg-black/20 rounded-md px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-sky-500 transition-shadow cursor-pointer"
+                    className="bg-white/20 rounded-md px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-sky-500 transition-shadow cursor-pointer"
                     style={{
                       color: isContrast ? '#00ff00' : '#f1f5f9',
                       border: `1px solid ${styles.borderColor}`,

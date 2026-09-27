@@ -41,7 +41,7 @@ export function MeshTopology({ connected, peerCount }: Props) {
 
       {/* Topology SVG Canvas */}
       <div 
-        className={`rounded-lg p-2 flex items-center justify-center relative ${isContrast ? 'bg-black border border-green-500' : 'bg-[var(--glass-bg)] border border-[var(--glass-border)] backdrop-blur-[var(--glass-blur)]'}`}
+        className={`rounded-lg p-2 flex items-center justify-center relative ${isContrast ? 'bg-white border border-green-500' : 'bg-[var(--glass-bg)] border border-[var(--glass-border)] backdrop-blur-[var(--glass-blur)]'}`}
       >
         <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="overflow-visible">
           {/* Connector lines to Central Server */}

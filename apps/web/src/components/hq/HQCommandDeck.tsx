@@ -122,7 +122,7 @@ P2P MESH: Operating nominally with WebRTC Yjs state replication.`);
                 initial={{ opacity: 0, y: -20, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                className="mb-2 p-3.5 rounded-xl pointer-events-auto shadow-xl backdrop-blur-xl border border-red-500/40 bg-red-950/85 text-white flex items-center justify-between gap-3"
+                className="mb-2 p-3.5 rounded-xl pointer-events-auto shadow-xl backdrop-blur-xl border border-red-500/40 bg-red-950/85 text-slate-900 flex items-center justify-between gap-3"
               >
                 <div className="flex items-center gap-2.5">
                   <span className="text-xl">🚨</span>
@@ -140,7 +140,7 @@ P2P MESH: Operating nominally with WebRTC Yjs state replication.`);
                     onDismissAlert(i);
                     triggerHaptic('tap');
                   }}
-                  className="text-red-300 hover:text-white text-sm p-1 cursor-pointer"
+                  className="text-red-300 hover:text-slate-900 text-sm p-1 cursor-pointer"
                   title="Dismiss alert"
                 >
                   ✕
@@ -164,14 +164,14 @@ P2P MESH: Operating nominally with WebRTC Yjs state replication.`);
       </div>
 
       {/* Right Tactical Sidebar (380px) */}
-      <aside className="w-full lg:w-[380px] shrink-0 border-t lg:border-t-0 lg:border-l border-slate-200 dark:border-slate-800 glass-panel bg-white/70 dark:bg-slate-900/70 flex flex-col z-10 h-[50vh] lg:h-auto overflow-hidden">
+      <aside className="w-full lg:w-[380px] shrink-0 border-t lg:border-t-0 lg:border-l border-slate-200 dark:border-slate-800 glass-panel bg-white/70 /70 flex flex-col z-10 h-[50vh] lg:h-auto overflow-hidden">
         {/* Navigation Tabs */}
         <div className="flex border-b border-slate-200 dark:border-slate-800 shrink-0">
           <button
             onClick={() => setActiveTab('volunteers')}
             className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 cursor-pointer ${
               activeTab === 'volunteers'
-                ? 'border-orange-500 text-orange-600 dark:text-orange-400 bg-orange-500/5'
+                ? 'border-orange-500 text-orange-600  bg-orange-500/5'
                 : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
@@ -181,7 +181,7 @@ P2P MESH: Operating nominally with WebRTC Yjs state replication.`);
             onClick={() => setActiveTab('zones')}
             className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 cursor-pointer ${
               activeTab === 'zones'
-                ? 'border-orange-500 text-orange-600 dark:text-orange-400 bg-orange-500/5'
+                ? 'border-orange-500 text-orange-600  bg-orange-500/5'
                 : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
@@ -191,7 +191,7 @@ P2P MESH: Operating nominally with WebRTC Yjs state replication.`);
             onClick={() => setActiveTab('security')}
             className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 cursor-pointer ${
               activeTab === 'security'
-                ? 'border-orange-500 text-orange-600 dark:text-orange-400 bg-orange-500/5'
+                ? 'border-orange-500 text-orange-600  bg-orange-500/5'
                 : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
@@ -219,16 +219,16 @@ P2P MESH: Operating nominally with WebRTC Yjs state replication.`);
           {activeTab === 'zones' && (
             <div className="p-4 space-y-4">
               <Card variant="glass" className="p-4 border border-orange-500/30">
-                <h3 className="text-sm font-bold font-tactical text-slate-900 dark:text-white mb-2">
+                <h3 className="text-sm font-bold font-tactical text-slate-900  mb-2">
                   Register Danger Zone
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
+                <p className="text-xs text-slate-500  mb-3">
                   Deploy perimeter coordinates to warn responders traversing into toxic, wildfire, or flood perimeters.
                 </p>
 
                 <form onSubmit={handleRegisterZone} className="space-y-3">
                   <div>
-                    <label className="text-[11px] font-bold uppercase text-slate-500 dark:text-slate-400 block mb-1">
+                    <label className="text-[11px] font-bold uppercase text-slate-500  block mb-1">
                       Zone Designation
                     </label>
                     <input
@@ -236,12 +236,12 @@ P2P MESH: Operating nominally with WebRTC Yjs state replication.`);
                       value={newZoneName}
                       onChange={(e) => setNewZoneName(e.target.value)}
                       placeholder="e.g. Zone Delta Plume"
-                      className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 outline-none focus:ring-2 focus:ring-orange-500"
+                      className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white/80 /80 outline-none focus:ring-2 focus:ring-orange-500"
                     />
                   </div>
 
                   <div>
-                    <label className="text-[11px] font-bold uppercase text-slate-500 dark:text-slate-400 block mb-1">
+                    <label className="text-[11px] font-bold uppercase text-slate-500  block mb-1">
                       Hazard Severity
                     </label>
                     <div className="grid grid-cols-3 gap-2">
@@ -252,8 +252,8 @@ P2P MESH: Operating nominally with WebRTC Yjs state replication.`);
                           onClick={() => setNewZoneSeverity(sev)}
                           className={`text-xs py-1.5 rounded-md font-semibold capitalize border cursor-pointer transition-colors ${
                             newZoneSeverity === sev
-                              ? 'border-orange-500 bg-orange-500/10 text-orange-600 dark:text-orange-400 font-bold'
-                              : 'border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400'
+                              ? 'border-orange-500 bg-orange-500/10 text-orange-600  font-bold'
+                              : 'border-slate-300 dark:border-slate-700 text-slate-600 '
                           }`}
                         >
                           {sev}
@@ -272,7 +272,7 @@ P2P MESH: Operating nominally with WebRTC Yjs state replication.`);
                   </Button>
 
                   {zoneRegistrationStatus && (
-                    <div className="text-xs text-emerald-600 dark:text-emerald-400 font-mono mt-2">
+                    <div className="text-xs text-emerald-600  font-mono mt-2">
                       ✓ {zoneRegistrationStatus}
                     </div>
                   )}
@@ -287,10 +287,10 @@ P2P MESH: Operating nominally with WebRTC Yjs state replication.`);
                 {zoneConfigs.map((zone) => (
                   <div
                     key={zone.zoneId}
-                    className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-800/50 flex items-center justify-between"
+                    className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 /50 flex items-center justify-between"
                   >
                     <div>
-                      <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                      <div className="text-xs font-bold text-slate-800 ">
                         {zone.zoneName}
                       </div>
                       <div className="text-[10px] text-slate-500 font-mono">
@@ -327,10 +327,10 @@ P2P MESH: Operating nominally with WebRTC Yjs state replication.`);
               </div>
 
               <Card variant="glass" className="p-3.5 border border-slate-200 dark:border-slate-800">
-                <div className="text-xs font-bold text-slate-900 dark:text-slate-100 mb-1">
+                <div className="text-xs font-bold text-slate-900  mb-1">
                   Active Execution Flags
                 </div>
-                <div className="text-xs text-slate-500 dark:text-slate-400 space-y-1 font-mono">
+                <div className="text-xs text-slate-500  space-y-1 font-mono">
                   <div>--experimental-permission</div>
                   <div>--allow-fs-read=./dist,./public</div>
                   <div>--allow-net=0.0.0.0:4000,api.osm.org</div>

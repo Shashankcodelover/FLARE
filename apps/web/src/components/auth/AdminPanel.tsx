@@ -69,7 +69,7 @@ export function AdminPanel({ isOpen, onClose, token }: AdminPanelProps) {
             </thead>
             <tbody>
               {users.map(u => (
-                <tr key={u._id} className="border-b border-slate-800/50 hover:bg-slate-900/50">
+                <tr key={u._id} className="border-b border-slate-800/50 hover:bg-slate-50/50">
                   <td className="py-3 pr-4">
                     <div className="font-bold text-sm">{u.profile?.name}</div>
                     <div className="text-xs text-slate-500">{u.email}</div>

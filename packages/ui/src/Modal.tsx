@@ -43,7 +43,7 @@ export function Modal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+            className="fixed inset-0 bg-white/60 backdrop-blur-sm transition-opacity"
           />
 
           {/* Modal Container */}
@@ -52,12 +52,12 @@ export function Modal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 15 }}
             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-            className={`relative w-full ${maxWidth} glass-panel bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-2xl rounded-2xl overflow-hidden z-10 flex flex-col max-h-[90vh] ${className}`}
+            className={`relative w-full ${maxWidth} glass-panel bg-white/90 /90 border border-slate-200 dark:border-slate-800 shadow-2xl rounded-2xl overflow-hidden z-10 flex flex-col max-h-[90vh] ${className}`}
           >
             {/* Header */}
             {title && (
               <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200/60 dark:border-slate-800/60">
-                <div className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 font-tactical">
+                <div className="text-lg font-bold tracking-tight text-slate-900  font-tactical">
                   {title}
                 </div>
                 <button
@@ -77,7 +77,7 @@ export function Modal({
 
             {/* Footer */}
             {footer && (
-              <div className="flex items-center justify-end gap-3 px-6 py-4 bg-slate-50/50 dark:bg-slate-900/50 border-t border-slate-200/60 dark:border-slate-800/60">
+              <div className="flex items-center justify-end gap-3 px-6 py-4 bg-slate-50/50 /50 border-t border-slate-200/60 dark:border-slate-800/60">
                 {footer}
               </div>
             )}

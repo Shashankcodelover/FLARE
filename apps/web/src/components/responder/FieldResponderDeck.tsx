@@ -92,7 +92,7 @@ export function FieldResponderDeck({
               <StatusDot status="online" label="L1/L5 RTK" />
             </div>
 
-            <div className="font-mono text-sm sm:text-base font-black tracking-tight text-white mb-1">
+            <div className="font-mono text-sm sm:text-base font-black tracking-tight text-slate-900 mb-1">
               {currentCoords.lat.toFixed(5)}° N, {Math.abs(currentCoords.lng).toFixed(5)}° W
             </div>
 
@@ -112,7 +112,7 @@ export function FieldResponderDeck({
                 setShowSosSlider(!showSosSlider);
                 triggerHaptic('tap');
               }}
-              className="w-16 h-16 rounded-full bg-red-600 hover:bg-red-500 text-white font-black text-sm tracking-wider shadow-2xl shadow-red-600/50 border-4 border-white/20 flex items-center justify-center cursor-pointer transition-transform"
+              className="w-16 h-16 rounded-full bg-red-600 hover:bg-red-500 text-slate-900 font-black text-sm tracking-wider shadow-2xl shadow-red-600/50 border-4 border-white/20 flex items-center justify-center cursor-pointer transition-transform"
               title="Emergency SOS Beacon"
             >
               SOS
@@ -134,7 +134,7 @@ export function FieldResponderDeck({
                     Slide right to transmit emergency GPS distress beacon across all P2P mesh nodes.
                   </p>
 
-                  <div className="h-10 bg-slate-900 border border-slate-700 rounded-full relative flex items-center justify-center overflow-hidden">
+                  <div className="h-10 bg-slate-50 border border-slate-700 rounded-full relative flex items-center justify-center overflow-hidden">
                     <span className="text-[10px] text-slate-400 select-none font-bold uppercase tracking-wider">
                       Slide Right →
                     </span>
@@ -152,7 +152,7 @@ export function FieldResponderDeck({
                       onDragEnd={() => {
                         if (sosProgress < 100) setSosProgress(0);
                       }}
-                      className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-bold text-xs absolute left-1 cursor-grab shadow-lg"
+                      className="w-8 h-8 rounded-full bg-red-600 text-slate-900 flex items-center justify-center font-bold text-xs absolute left-1 cursor-grab shadow-lg"
                     >
                       🆘
                     </motion.div>
@@ -188,12 +188,12 @@ export function FieldResponderDeck({
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 50 }}
-            className="absolute top-4 right-4 bottom-4 w-80 z-[1200] glass-panel bg-white/80 dark:bg-slate-950/80 border border-emerald-500/30 shadow-2xl rounded-2xl flex flex-col overflow-hidden backdrop-blur-2xl"
+            className="absolute top-4 right-4 bottom-4 w-80 z-[1200] glass-panel bg-white/80 /80 border border-emerald-500/30 shadow-2xl rounded-2xl flex flex-col overflow-hidden backdrop-blur-2xl"
           >
             {/* Header */}
             <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold font-tactical text-slate-900 dark:text-white">
+                <h3 className="text-sm font-bold font-tactical text-slate-900 ">
                   P2P Mesh Channels
                 </h3>
                 <p className="text-[11px] text-slate-500 font-mono">
@@ -214,12 +214,12 @@ export function FieldResponderDeck({
               {volunteers.slice(0, 5).map((vol) => (
                 <div
                   key={vol.id}
-                  className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 flex items-center justify-between"
+                  className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 /60 flex items-center justify-between"
                 >
                   <div className="flex items-center gap-2.5">
                     <span className="text-lg">{roleIcons[vol.role] || '👤'}</span>
                     <div>
-                      <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                      <div className="text-xs font-bold text-slate-800 ">
                         {vol.name}
                       </div>
                       <div className="text-[10px] text-slate-500 font-mono">
@@ -233,10 +233,10 @@ export function FieldResponderDeck({
             </div>
 
             {/* Offline Cache Status */}
-            <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+            <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 /50">
               <div className="flex items-center justify-between text-xs mb-2">
                 <span className="text-slate-500">Local Tile Cache:</span>
-                <span className="font-mono text-emerald-600 dark:text-emerald-400 font-bold">100% Ready</span>
+                <span className="font-mono text-emerald-600  font-bold">100% Ready</span>
               </div>
               <Button
                 variant="glass"
