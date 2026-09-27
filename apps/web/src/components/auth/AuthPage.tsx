@@ -45,23 +45,8 @@ export function AuthPage({ onLogin }: AuthPageProps) {
     }
   };
 
-  const handleDemoMode = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const res = await fetch(`${API_URL}/api/v1/auth/demo`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ role: 'demo' }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Demo login failed');
-      onLogin(data.user, data.token);
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+  const handleDemoMode = () => {
+    onLogin({ id: 'demo-123', email: 'demo@flare.local', role: 'hq', profile: { name: 'Demo User' } }, 'demo-token');
   };
 
   return (
@@ -171,7 +156,7 @@ export function AuthPage({ onLogin }: AuthPageProps) {
           onClick={handleDemoMode}
           disabled={loading}
         >
-          dY" Enter Text Demo Mode (No Login)
+          Demo
         </Button>
       </motion.div>
     </div>
