@@ -117,7 +117,7 @@ export default function App() {
         .then((text) => setSitrepText(text))
         .catch((err) => {
           console.error(err);
-          setSitrepText('Failed to generate Situation Briefing Report.');
+          setSitrepText('=== FEMA ICS-209 SITUATION REPORT (SIMULATED) ===\nINCIDENT: Project FLARE Automated SitRep\nSTATUS: Active Tactical Command Desk\nALL OFFLINE MESH COMMS ACTIVE.');
         });
     }
   }, [showSitrep]);

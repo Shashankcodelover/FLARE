@@ -87,7 +87,7 @@ export function FieldResponderDeck({
           >
             <div className="flex items-center justify-between gap-3 mb-2">
               <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 font-mono">
-                🛰️ LIVE RESONDER GPS
+                🛰️ LIVE RESPONDER GPS
               </span>
               <StatusDot status="online" label="L1/L5 RTK" />
             </div>

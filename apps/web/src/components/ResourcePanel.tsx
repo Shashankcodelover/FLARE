@@ -23,6 +23,7 @@ export function ResourcePanel({ socket }: Props) {
 
   useEffect(() => {
     fetch(`${API_URL}/api/resources`).then((r) => r.json()).then((data: ResourceHub[]) => {
+      const safeData = Array.isArray(data) ? data : [];
       setHubs(safeData);
       if (safeData.length > 0) setExpanded(safeData[0]._id);
     }).catch(console.error);
