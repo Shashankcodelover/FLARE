@@ -98,7 +98,7 @@ export function CommandHeader({
   return (
     <header
       role="banner"
-      className="glass-panel border-b border-slate-200 border-slate-800 px-4 py-2.5 flex items-center justify-between flex-shrink-0 relative z-[1300] gap-4"
+      className="glass-panel border-b border-slate-200 dark:border-slate-800 px-4 py-2.5 flex items-center justify-between flex-shrink-0 relative z-[1300] gap-4"
     >
       {/* Scanline tactical overlay */}
       <div className="scanline-overlay opacity-30" />
@@ -151,7 +151,7 @@ export function CommandHeader({
                   className={`flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
                     isActive
                       ? 'bg-white  text-slate-900  shadow-sm'
-                      : 'text-slate-600  hover:text-slate-900 hover:text-slate-800'
+                      : 'text-slate-600  hover:text-slate-900 dark:hover:text-slate-200'
                   }`}
                 >
                   <span>{deck.icon}</span>
@@ -194,7 +194,7 @@ export function CommandHeader({
             aria-label="Operational Role"
             value={userRole}
             onChange={(e) => changeRole(e.target.value as any)}
-            className="text-xs px-2 py-1 rounded-lg border border-slate-300 border-slate-700 bg-white/70 /70 text-slate-800  outline-none cursor-pointer"
+            className="text-xs px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white/70 /70 text-slate-800  outline-none cursor-pointer"
           >
             <option value="viewer">Viewer</option>
             <option value="field_agent">Field Agent</option>
@@ -211,7 +211,7 @@ export function CommandHeader({
             aria-label="Language Selector"
             value={lang}
             onChange={handleLangChange}
-            className="text-xs px-2 py-1 rounded-lg border border-slate-300 border-slate-700 bg-white/70 /70 text-slate-800  outline-none cursor-pointer max-w-[90px]"
+            className="text-xs px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white/70 /70 text-slate-800  outline-none cursor-pointer max-w-[90px]"
           >
             {FIFTY_LANGUAGES.map((l) => (
               <option key={l.code} value={l.code}>
@@ -230,7 +230,7 @@ export function CommandHeader({
               className={`px-1.5 py-0.5 text-[10px] font-bold uppercase rounded cursor-pointer ${
                 textSize === sz
                   ? 'bg-white  text-blue-600  shadow-sm'
-                  : 'text-slate-500 hover:text-slate-800 hover:text-slate-800'
+                  : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
               }`}
             >
               {sz}
