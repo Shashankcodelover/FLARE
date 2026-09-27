@@ -83,7 +83,7 @@ export function FieldResponderDeck({
         <div className="absolute top-4 left-4 z-[1200] pointer-events-auto">
           <Card
             variant="glass"
-            className="p-3.5 border border-emerald-500/40 bg-slate-950/85 backdrop-blur-xl text-slate-100 shadow-2xl max-w-xs"
+            className="p-3.5 border border-emerald-500/40 bg-white/85 backdrop-blur-xl text-slate-100 shadow-2xl max-w-xs"
           >
             <div className="flex items-center justify-between gap-3 mb-2">
               <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 font-mono">
@@ -125,7 +125,7 @@ export function FieldResponderDeck({
                   initial={{ opacity: 0, y: 20, scale: 0.9 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 20, scale: 0.9 }}
-                  className="absolute bottom-20 left-0 w-72 glass-panel p-4 bg-slate-950/90 border-2 border-red-500/60 shadow-2xl rounded-2xl"
+                  className="absolute bottom-20 left-0 w-72 glass-panel p-4 bg-white/90 border-2 border-red-500/60 shadow-2xl rounded-2xl"
                 >
                   <div className="text-xs font-bold text-center text-red-400 mb-2 uppercase tracking-wider">
                     Emergency Broadcast
@@ -191,7 +191,7 @@ export function FieldResponderDeck({
             className="absolute top-4 right-4 bottom-4 w-80 z-[1200] glass-panel bg-white/80 /80 border border-emerald-500/30 shadow-2xl rounded-2xl flex flex-col overflow-hidden backdrop-blur-2xl"
           >
             {/* Header */}
-            <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <div className="p-4 border-b border-slate-200 border-slate-800 flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-bold font-tactical text-slate-900 ">
                   P2P Mesh Channels
@@ -214,7 +214,7 @@ export function FieldResponderDeck({
               {volunteers.slice(0, 5).map((vol) => (
                 <div
                   key={vol.id}
-                  className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 /60 flex items-center justify-between"
+                  className="p-3 rounded-xl border border-slate-200 border-slate-800 bg-white/60 /60 flex items-center justify-between"
                 >
                   <div className="flex items-center gap-2.5">
                     <span className="text-lg">{roleIcons[vol.role] || '👤'}</span>
@@ -233,7 +233,7 @@ export function FieldResponderDeck({
             </div>
 
             {/* Offline Cache Status */}
-            <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 /50">
+            <div className="p-4 border-t border-slate-200 border-slate-800 bg-slate-50/50 /50">
               <div className="flex items-center justify-between text-xs mb-2">
                 <span className="text-slate-500">Local Tile Cache:</span>
                 <span className="font-mono text-emerald-600  font-bold">100% Ready</span>

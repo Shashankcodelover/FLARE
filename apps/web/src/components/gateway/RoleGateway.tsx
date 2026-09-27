@@ -163,7 +163,7 @@ export function RoleGateway({
                     {role.description}
                   </p>
 
-                  <div className="space-y-2 mb-6 pt-4 border-t border-slate-200/60 dark:border-slate-800/60">
+                  <div className="space-y-2 mb-6 pt-4 border-t border-slate-200/60 border-slate-800/60">
                     <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 ">
                       Deck Capabilities
                     </div>
@@ -194,7 +194,7 @@ export function RoleGateway({
       </main>
 
       {/* Bottom Live System Telemetry Bar */}
-      <footer className="w-full max-w-7xl mx-auto pt-6 border-t border-slate-200/60 dark:border-slate-800/60 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500 ">
+      <footer className="w-full max-w-7xl mx-auto pt-6 border-t border-slate-200/60 border-slate-800/60 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500 ">
         <div className="flex items-center gap-6">
           <StatusDot
             status={connected ? 'online' : 'offline'}

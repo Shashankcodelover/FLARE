@@ -73,7 +73,7 @@ export function LogisticsDeck({ socket, triggerHaptic }: LogisticsDeckProps) {
         </Card>
 
         {/* Existing ResourcePanel Component wrapped inside glass card */}
-        <div className="flex-1 min-h-[350px] glass-panel bg-white/70 /70 border border-slate-200 dark:border-slate-800 p-3 rounded-2xl overflow-y-auto">
+        <div className="flex-1 min-h-[350px] glass-panel bg-white/70 /70 border border-slate-200 border-slate-800 p-3 rounded-2xl overflow-y-auto">
           <ResourcePanel socket={socket} />
         </div>
       </div>
@@ -82,7 +82,7 @@ export function LogisticsDeck({ socket, triggerHaptic }: LogisticsDeckProps) {
       <div className="flex-1 flex flex-col gap-6 overflow-y-auto min-w-0">
         {/* Redis Horizontal Cluster Telemetry */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Card variant="glass" className="p-4 border border-slate-200 dark:border-slate-800">
+          <Card variant="glass" className="p-4 border border-slate-200 border-slate-800">
             <div className="text-[11px] font-bold uppercase text-slate-500 mb-1">
               Redis Horizontal Adapters
             </div>
@@ -94,7 +94,7 @@ export function LogisticsDeck({ socket, triggerHaptic }: LogisticsDeckProps) {
             </div>
           </Card>
 
-          <Card variant="glass" className="p-4 border border-slate-200 dark:border-slate-800">
+          <Card variant="glass" className="p-4 border border-slate-200 border-slate-800">
             <div className="text-[11px] font-bold uppercase text-slate-500 mb-1">
               Message Replication Delay
             </div>
@@ -106,7 +106,7 @@ export function LogisticsDeck({ socket, triggerHaptic }: LogisticsDeckProps) {
             </div>
           </Card>
 
-          <Card variant="glass" className="p-4 border border-slate-200 dark:border-slate-800">
+          <Card variant="glass" className="p-4 border border-slate-200 border-slate-800">
             <div className="text-[11px] font-bold uppercase text-slate-500 mb-1">
               YATA CRDT Operations
             </div>
@@ -120,7 +120,7 @@ export function LogisticsDeck({ socket, triggerHaptic }: LogisticsDeckProps) {
         </div>
 
         {/* Conflict-Free Transaction History Ledger */}
-        <Card variant="glass" className="p-5 border border-slate-200 dark:border-slate-800 flex-1">
+        <Card variant="glass" className="p-5 border border-slate-200 border-slate-800 flex-1">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-base font-bold font-tactical text-slate-900 ">
@@ -138,7 +138,7 @@ export function LogisticsDeck({ socket, triggerHaptic }: LogisticsDeckProps) {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold uppercase text-slate-400">
+                <tr className="border-b border-slate-200 border-slate-800 text-[11px] font-bold uppercase text-slate-400">
                   <th className="pb-3">Op ID</th>
                   <th className="pb-3">Resource Item</th>
                   <th className="pb-3">Quantity Delta</th>
@@ -146,9 +146,9 @@ export function LogisticsDeck({ socket, triggerHaptic }: LogisticsDeckProps) {
                   <th className="pb-3">Convergence Rule</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-mono">
+              <tbody className="divide-y divide-slate-100 divide-slate-800/60 font-mono">
                 {ledger.map((row) => (
-                  <tr key={row.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
+                  <tr key={row.id} className="hover:bg-slate-50/50 hover:bg-slate-800/30">
                     <td className="py-3 text-slate-400">{row.id}</td>
                     <td className="py-3 font-semibold text-slate-800 ">{row.item}</td>
                     <td className="py-3 text-emerald-600  font-bold">{row.delta}</td>

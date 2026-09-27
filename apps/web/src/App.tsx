@@ -451,7 +451,7 @@ export default function App() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 30 }}
-                  className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1100] px-4 py-3 rounded-2xl bg-slate-950/95 border-2 border-red-500/80 text-slate-900 shadow-2xl flex items-center gap-4 backdrop-blur-xl min-w-[320px] justify-between"
+                  className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1100] px-4 py-3 rounded-2xl bg-white/95 border-2 border-red-500/80 text-slate-900 shadow-2xl flex items-center gap-4 backdrop-blur-xl min-w-[320px] justify-between"
                 >
                   <div className="flex flex-col">
                     <span className="text-xs font-bold text-slate-100">
@@ -537,7 +537,7 @@ export default function App() {
               </div>
             }
           >
-            <div className="p-4 rounded-xl bg-slate-950 font-mono text-xs text-slate-200 whitespace-pre-wrap leading-relaxed max-h-[50vh] overflow-y-auto border border-slate-800">
+            <div className="p-4 rounded-xl bg-white font-mono text-xs text-slate-800 whitespace-pre-wrap leading-relaxed max-h-[50vh] overflow-y-auto border border-slate-800">
               {sitrepText}
             </div>
           </Modal>

@@ -164,15 +164,15 @@ P2P MESH: Operating nominally with WebRTC Yjs state replication.`);
       </div>
 
       {/* Right Tactical Sidebar (380px) */}
-      <aside className="w-full lg:w-[380px] shrink-0 border-t lg:border-t-0 lg:border-l border-slate-200 dark:border-slate-800 glass-panel bg-white/70 /70 flex flex-col z-10 h-[50vh] lg:h-auto overflow-hidden">
+      <aside className="w-full lg:w-[380px] shrink-0 border-t lg:border-t-0 lg:border-l border-slate-200 border-slate-800 glass-panel bg-white/70 /70 flex flex-col z-10 h-[50vh] lg:h-auto overflow-hidden">
         {/* Navigation Tabs */}
-        <div className="flex border-b border-slate-200 dark:border-slate-800 shrink-0">
+        <div className="flex border-b border-slate-200 border-slate-800 shrink-0">
           <button
             onClick={() => setActiveTab('volunteers')}
             className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 cursor-pointer ${
               activeTab === 'volunteers'
                 ? 'border-orange-500 text-orange-600  bg-orange-500/5'
-                : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:text-slate-800'
             }`}
           >
             Dispatches ({volunteers.length})
@@ -182,7 +182,7 @@ P2P MESH: Operating nominally with WebRTC Yjs state replication.`);
             className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 cursor-pointer ${
               activeTab === 'zones'
                 ? 'border-orange-500 text-orange-600  bg-orange-500/5'
-                : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:text-slate-800'
             }`}
           >
             Geofence Zones
@@ -192,7 +192,7 @@ P2P MESH: Operating nominally with WebRTC Yjs state replication.`);
             className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 cursor-pointer ${
               activeTab === 'security'
                 ? 'border-orange-500 text-orange-600  bg-orange-500/5'
-                : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:text-slate-800'
             }`}
           >
             Node 22 Audit
@@ -236,7 +236,7 @@ P2P MESH: Operating nominally with WebRTC Yjs state replication.`);
                       value={newZoneName}
                       onChange={(e) => setNewZoneName(e.target.value)}
                       placeholder="e.g. Zone Delta Plume"
-                      className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white/80 /80 outline-none focus:ring-2 focus:ring-orange-500"
+                      className="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 border-slate-700 bg-white/80 /80 outline-none focus:ring-2 focus:ring-orange-500"
                     />
                   </div>
 
@@ -253,7 +253,7 @@ P2P MESH: Operating nominally with WebRTC Yjs state replication.`);
                           className={`text-xs py-1.5 rounded-md font-semibold capitalize border cursor-pointer transition-colors ${
                             newZoneSeverity === sev
                               ? 'border-orange-500 bg-orange-500/10 text-orange-600  font-bold'
-                              : 'border-slate-300 dark:border-slate-700 text-slate-600 '
+                              : 'border-slate-300 border-slate-700 text-slate-600 '
                           }`}
                         >
                           {sev}
@@ -287,7 +287,7 @@ P2P MESH: Operating nominally with WebRTC Yjs state replication.`);
                 {zoneConfigs.map((zone) => (
                   <div
                     key={zone.zoneId}
-                    className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 /50 flex items-center justify-between"
+                    className="p-3 rounded-xl border border-slate-200 border-slate-800 bg-white/50 /50 flex items-center justify-between"
                   >
                     <div>
                       <div className="text-xs font-bold text-slate-800 ">
@@ -317,7 +317,7 @@ P2P MESH: Operating nominally with WebRTC Yjs state replication.`);
                 </Badge>
               </div>
 
-              <div className="bg-slate-950 text-emerald-400 font-mono text-[11px] p-3.5 rounded-xl border border-slate-800 leading-relaxed overflow-x-auto space-y-1.5 shadow-inner">
+              <div className="bg-white text-emerald-400 font-mono text-[11px] p-3.5 rounded-xl border border-slate-800 leading-relaxed overflow-x-auto space-y-1.5 shadow-inner">
                 {securityLogs.map((log, idx) => (
                   <div key={idx} className="flex gap-2">
                     <span className="text-slate-600">[{new Date().toLocaleTimeString()}]</span>
@@ -326,7 +326,7 @@ P2P MESH: Operating nominally with WebRTC Yjs state replication.`);
                 ))}
               </div>
 
-              <Card variant="glass" className="p-3.5 border border-slate-200 dark:border-slate-800">
+              <Card variant="glass" className="p-3.5 border border-slate-200 border-slate-800">
                 <div className="text-xs font-bold text-slate-900  mb-1">
                   Active Execution Flags
                 </div>
@@ -371,7 +371,7 @@ P2P MESH: Operating nominally with WebRTC Yjs state replication.`);
           </div>
         }
       >
-        <div className="p-4 rounded-xl bg-slate-950 font-mono text-xs text-slate-200 whitespace-pre-wrap leading-relaxed max-h-[50vh] overflow-y-auto border border-slate-800">
+        <div className="p-4 rounded-xl bg-white font-mono text-xs text-slate-800 whitespace-pre-wrap leading-relaxed max-h-[50vh] overflow-y-auto border border-slate-800">
           {sitrepText}
         </div>
       </Modal>

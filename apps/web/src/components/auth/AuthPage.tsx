@@ -50,7 +50,7 @@ export function AuthPage({ onLogin }: AuthPageProps) {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-slate-950 text-slate-200">
+    <div className="flex h-screen items-center justify-center bg-white text-slate-800">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

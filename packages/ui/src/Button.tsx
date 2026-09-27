@@ -16,9 +16,9 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   'tactical-orange': 'bg-[#ea580c] hover:bg-[#c2410c] text-slate-900 shadow-sm hover:shadow-orange-500/30 hover:scale-[1.02] active:scale-[0.98]',
   'tactical-green': 'bg-[#16a34a] hover:bg-[#15803d] text-slate-900 shadow-sm hover:shadow-green-500/30 hover:scale-[1.02] active:scale-[0.98]',
   'tactical-yellow': 'bg-[#d97706] hover:bg-[#b45309] text-slate-900 shadow-sm hover:shadow-yellow-500/30 hover:scale-[1.02] active:scale-[0.98]',
-  glass: 'glass-panel text-current hover:bg-white/80 dark:hover:bg-slate-800/80 border border-slate-300 dark:border-slate-700 active:scale-[0.98]',
+  glass: 'glass-panel text-current hover:bg-white/80 hover:bg-slate-800/80 border border-slate-300 border-slate-700 active:scale-[0.98]',
   danger: 'bg-red-600 hover:bg-red-500 text-slate-900 shadow-sm hover:shadow-red-500/30 active:scale-[0.98]',
-  ghost: 'bg-transparent hover:bg-white/5 dark:hover:bg-white/10 text-current',
+  ghost: 'bg-transparent hover:bg-white/5 hover:bg-white/10 text-current',
 };
 
 const SIZE_CLASSES: Record<ButtonSize, string> = {

@@ -47,7 +47,7 @@ export function ProfileModal({ isOpen, onClose, user, token, onUserUpdate }: Pro
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Operator Profile Maintenance" maxWidth="max-w-md">
-      <div className="p-4 bg-slate-950 text-slate-200">
+      <div className="p-4 bg-white text-slate-800">
         {error && <div className="mb-4 text-red-400 text-sm">{error}</div>}
         {success && <div className="mb-4 text-green-400 text-sm">{success}</div>}
         

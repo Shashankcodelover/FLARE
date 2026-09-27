@@ -34,7 +34,7 @@ export function Tabs<T extends string = string>({
               className={`flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
                 isActive
                   ? 'bg-white  text-slate-900  shadow-sm'
-                  : 'text-slate-600  hover:text-slate-900 dark:hover:text-slate-200'
+                  : 'text-slate-600  hover:text-slate-900 hover:text-slate-800'
               }`}
             >
               {tab.icon && <span>{tab.icon}</span>}
@@ -49,7 +49,7 @@ export function Tabs<T extends string = string>({
 
   // default 'glass' / tactical tab list
   return (
-    <div className={`flex border-b border-slate-200 dark:border-slate-800 w-full ${className}`}>
+    <div className={`flex border-b border-slate-200 border-slate-800 w-full ${className}`}>
       {tabs.map((tab) => {
         const isActive = tab.id === activeTab;
         return (
@@ -58,8 +58,8 @@ export function Tabs<T extends string = string>({
             onClick={() => onChange(tab.id)}
             className={`flex-1 flex items-center justify-center gap-1.5 py-3 px-2 text-xs font-bold uppercase tracking-wider transition-all border-b-2 outline-none cursor-pointer ${
               isActive
-                ? 'border-blue-600 dark:border-sky-400 text-blue-600  bg-blue-500/5 /5'
-                : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                ? 'border-blue-600 border-sky-400 text-blue-600  bg-blue-500/5 /5'
+                : 'border-transparent text-slate-500 hover:text-slate-700 hover:text-slate-300'
             }`}
           >
             {tab.icon && <span>{tab.icon}</span>}

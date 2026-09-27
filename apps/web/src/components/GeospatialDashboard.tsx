@@ -282,7 +282,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
               pathOptions={{ color, fillColor: isContrast ? 'transparent' : SEVERITY_GLOW[zone.severity], fillOpacity: 1, weight: 2, opacity: 0.9 }}>
               <Popup>
                 <div 
-                  className="px-3 py-2 rounded-md min-w-[180px] text-slate-200"
+                  className="px-3 py-2 rounded-md min-w-[180px] text-slate-800"
                   style={{ background: isContrast ? '#000' : 'var(--glass-bg)', fontFamily: styles.fontFamily, border: `1px solid ${styles.borderColor}`, backdropFilter: isContrast ? 'none' : 'blur(var(--glass-blur))' }}>
                   <div className="font-bold text-sm mb-1">{zone.name}</div>
                   <div className="flex gap-1.5 mb-1">
@@ -302,7 +302,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
             <Marker key={hub._id} position={[lat, lng]} icon={hubIcon()}>
               <Popup>
                 <div 
-                  className="px-3 py-2 rounded-md min-w-[200px] text-slate-200"
+                  className="px-3 py-2 rounded-md min-w-[200px] text-slate-800"
                   style={{ background: isContrast ? '#000' : 'var(--glass-bg)', fontFamily: styles.fontFamily, border: `1px solid ${styles.borderColor}`, backdropFilter: isContrast ? 'none' : 'blur(var(--glass-blur))' }}>
                   <div className="font-bold text-[13px] mb-1.5 text-sky-400">📦 {hub.name}</div>
                   <div className="text-[10px] text-slate-500 mb-1.5">Capacity: {hub.capacity}</div>
@@ -327,7 +327,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
           >
             <Popup>
               <div 
-                className="px-3.5 py-2.5 rounded-md min-w-[200px] text-slate-200"
+                className="px-3.5 py-2.5 rounded-md min-w-[200px] text-slate-800"
                 style={{ background: isContrast ? '#000' : 'var(--glass-bg)', fontFamily: styles.fontFamily, border: `1px solid ${styles.borderColor}`, backdropFilter: isContrast ? 'none' : 'blur(var(--glass-blur))' }}>
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-[22px]">{v.gender === 'female' ? '👩' : '👨'}</span>
@@ -491,7 +491,7 @@ export function GeospatialDashboard({ socket, volunteers, selectedVolunteerId, o
                 boxShadow: isContrast ? 'none' : '0 12px 40px rgba(0,0,0,0.6)',
               }}
             >
-              <h2 className={`text-base font-black mb-4 uppercase ${isContrast ? 'text-green-500' : 'text-slate-200'}`}>
+              <h2 className={`text-base font-black mb-4 uppercase ${isContrast ? 'text-green-500' : 'text-slate-800'}`}>
                 ✏ Create Danger Zone
               </h2>
               <form onSubmit={handleSubmitZone} className="flex flex-col gap-3">

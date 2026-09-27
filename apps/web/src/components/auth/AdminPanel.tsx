@@ -52,7 +52,7 @@ export function AdminPanel({ isOpen, onClose, token }: AdminPanelProps) {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Admin Override - User Database" maxWidth="max-w-4xl">
-      <div className="p-4 bg-slate-950 text-slate-200 h-[60vh] overflow-y-auto">
+      <div className="p-4 bg-white text-slate-800 h-[60vh] overflow-y-auto">
         {error && <div className="text-red-400 mb-4">{error}</div>}
         
         {loading ? (
