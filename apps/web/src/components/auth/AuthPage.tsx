@@ -9,6 +9,7 @@ interface AuthPageProps {
 }
 
 export function AuthPage({ onLogin }: AuthPageProps) {
+  const [showAuthForm, setShowAuthForm] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -49,70 +50,48 @@ export function AuthPage({ onLogin }: AuthPageProps) {
     onLogin({ id: 'demo-123', email: 'demo@flare.local', role: 'hq', profile: { name: 'Demo User' } }, 'demo-token');
   };
 
-  return (
-    <div className="flex h-screen items-center justify-center bg-white text-slate-800">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md p-8 glass-panel border border-slate-800 rounded-2xl shadow-2xl"
-      >
-        <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 bg-gradient-to-tr from-sky-500 to-indigo-500 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(14,165,233,0.4)]">
-            <span className="text-3xl">dYZ </span>
-          </div>
-        </div>
-        
-        <h2 className="text-2xl font-bold text-center mb-8 bg-gradient-to-r from-sky-400 to-indigo-400 bg-clip-text text-transparent">
-          FLARE COMMAND
-        </h2>
-
-        {error && (
-          <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-400 text-sm">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {!isLogin && (
-            <div>
-              <label className="block text-xs text-slate-400 mb-1">Full Name</label>
+  if (showAuthForm) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-slate-50 text-slate-800">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-md p-8 bg-white border border-slate-200 rounded-2xl shadow-xl"
+        >
+          <h2 className="text-2xl font-bold text-center mb-8 text-slate-800">
+            {isLogin ? 'Login to FLARE' : 'Register for FLARE'}
+          </h2>
+          {error && <div className="mb-4 text-red-500 text-sm text-center">{error}</div>}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {!isLogin && (
               <input
                 type="text"
+                placeholder="Full Name"
                 required
-                className="w-full px-4 py-2 bg-slate-50 border border-slate-700 rounded-lg focus:outline-none focus:border-sky-500 text-sm"
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm"
                 value={name}
                 onChange={e => setName(e.target.value)}
               />
-            </div>
-          )}
-          
-          <div>
-            <label className="block text-xs text-slate-400 mb-1">Email</label>
+            )}
             <input
               type="email"
+              placeholder="Email"
               required
-              className="w-full px-4 py-2 bg-slate-50 border border-slate-700 rounded-lg focus:outline-none focus:border-sky-500 text-sm"
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm"
               value={email}
               onChange={e => setEmail(e.target.value)}
             />
-          </div>
-
-          <div>
-            <label className="block text-xs text-slate-400 mb-1">Password</label>
             <input
               type="password"
+              placeholder="Password"
               required
-              className="w-full px-4 py-2 bg-slate-50 border border-slate-700 rounded-lg focus:outline-none focus:border-sky-500 text-sm"
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm"
               value={password}
               onChange={e => setPassword(e.target.value)}
             />
-          </div>
-
-          {!isLogin && (
-            <div>
-              <label className="block text-xs text-slate-400 mb-1">Role</label>
+            {!isLogin && (
               <select
-                className="w-full px-4 py-2 bg-slate-50 border border-slate-700 rounded-lg focus:outline-none focus:border-sky-500 text-sm"
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm"
                 value={role}
                 onChange={e => setRole(e.target.value as any)}
               >
@@ -120,45 +99,55 @@ export function AuthPage({ onLogin }: AuthPageProps) {
                 <option value="hq">HQ Commander</option>
                 <option value="logistics">Logistics Coordinator</option>
               </select>
-            </div>
-          )}
+            )}
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Authenticating...' : (isLogin ? 'Login' : 'Register')}
+            </Button>
+          </form>
+          <div className="mt-4 text-center">
+            <button onClick={() => setIsLogin(!isLogin)} className="text-sm text-sky-600 hover:underline">
+              {isLogin ? 'Need an account? Register' : 'Have an account? Login'}
+            </button>
+          </div>
+          <div className="mt-4 text-center">
+            <button onClick={() => setShowAuthForm(false)} className="text-sm text-slate-400 hover:underline">
+              Back to Home
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
 
-          <Button 
-            type="submit" 
-            variant="glass" 
-            className="w-full mt-6"
-            disabled={loading}
-          >
-            {loading ? 'Authenticating...' : (isLogin ? 'Secure Login' : 'Register Operator')}
-          </Button>
-        </form>
-
-        <div className="mt-6 text-center">
-          <button 
-            type="button" 
-            className="text-xs text-slate-400 hover:text-slate-900 underline"
-            onClick={() => setIsLogin(!isLogin)}
-          >
-            {isLogin ? 'Need clearance? Register here.' : 'Already have clearance? Login.'}
-          </button>
-        </div>
-
-        <div className="my-6 flex items-center gap-4">
-          <div className="h-px bg-slate-800 flex-1" />
-          <span className="text-xs text-slate-500 uppercase tracking-widest">or</span>
-          <div className="h-px bg-slate-800 flex-1" />
-        </div>
-
-        <Button 
-          type="button" 
-          variant="ghost" 
-          className="w-full text-slate-300 hover:text-slate-900"
-          onClick={handleDemoMode}
-          disabled={loading}
-        >
-          Demo
-        </Button>
-      </motion.div>
+  return (
+    <div className="flex flex-col min-h-screen bg-white text-slate-900 font-sans">
+      <main className="flex-1 flex flex-col items-center justify-center px-6 text-center max-w-4xl mx-auto">
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+          <div className="mx-auto w-20 h-20 bg-gradient-to-tr from-sky-500 to-indigo-500 rounded-full flex items-center justify-center mb-8 shadow-lg">
+            <span className="text-white text-4xl">⚡</span>
+          </div>
+          <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 mb-6">
+            Project FLARE
+          </h1>
+          <p className="text-lg md:text-xl text-slate-500 mb-10 leading-relaxed max-w-2xl mx-auto">
+            The decentralized disaster response coordinator. Equip field operators and HQ commanders with real-time mapping, offline-first peer-to-peer comms, and instant resource mobilization.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button
+              onClick={() => setShowAuthForm(true)}
+              className="px-8 py-4 bg-indigo-600 text-white rounded-lg font-bold shadow-md hover:bg-indigo-700 transition"
+            >
+              Sign Up / Login
+            </button>
+            <button
+              onClick={handleDemoMode}
+              className="px-8 py-4 bg-white text-indigo-600 border border-slate-200 rounded-lg font-bold shadow-sm hover:bg-slate-50 transition flex items-center justify-center gap-2"
+            >
+              ▶ Try Demo
+            </button>
+          </div>
+        </motion.div>
+      </main>
     </div>
   );
 }
